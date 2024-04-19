@@ -50,9 +50,7 @@ export default function SignIn() {
     setError(null);
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
-  console.log(formData);
 
-  
   return (
     <div className="py-20 w-full px-10 sm:max-w-2xl mx-auto sm:py-20 ">
       <Tabs isFitted variant="enclosed">
