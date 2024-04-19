@@ -6,21 +6,19 @@ import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { useNavigate } from "react-router-dom";
 import { SignInForm } from "../components/SignInForm";
 import { useDispatch, useSelector} from "react-redux";
-import { signInSuccess } from "../redux/user/userSlice";
+import { signInSuccess, signInFailure, signInStart } from "../redux/user/userSlice";
 
 export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {theme} = useSelector(state => state.theme);
+  const {loading, error} = useSelector((state) => state.user);
   const [userType, setUserType] = useState("admin");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    dispatch(signInStart());
     try{
       const res = await fetch(`/api/auth/sign-in/${userType}`, {
         method: "POST",
@@ -30,33 +28,28 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      setLoading(false);
       if(data.success === false){
-        setError(data.message);
+        dispatch(signInFailure(data.message));
         return;
       }
-      dispatch(signInSuccess(data));
-      navigate('/dashboard');
-      
+      const {password : pass , ...rest} = data;
+      dispatch(signInSuccess(rest));
+      navigate('/dashboard'); 
     }
     catch(err){
-      setError(err.message);
-      setLoading(false);
+      dispatch(signInFailure(err.message));
     }
     
   };
   const handleTabChange = (currentUserType) => {
-    setError(null);
     setFormData({ email: "", password: "" });
     setUserType(currentUserType);
   }
   const handleChange = (e) => {
-    setError(null);
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
-  console.log(formData);
-
   
+
   return (
     <div className="py-20 w-full px-10 sm:max-w-2xl mx-auto sm:py-20 ">
       <Tabs isFitted variant="enclosed">
@@ -138,8 +131,7 @@ export default function SignIn() {
                 loading={loading}
                 error={error}
               />
-            </TabPanel>
-            
+            </TabPanel> 
           </TabPanels>
         </div>
       </Tabs>
