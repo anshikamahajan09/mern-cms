@@ -6,6 +6,7 @@ import faculty from "../models/faculty.model.js";
 import admin from "../models/admin.model.js";
 
 export const signIn = async (req, res, next) => {
+  console.log(req.body);
   const userType = req.params.userType;
   const { email, password } = req.body;
   let User;

@@ -1,6 +1,5 @@
 import { Label, TextInput, Button, Spinner, Alert } from "flowbite-react";
 import { Link } from "react-router-dom";
-
 export function SignInForm({
   userType,
   formData,
@@ -53,7 +52,7 @@ export function SignInForm({
       <div className="flex gap-2 text-sm mt-4">
         <span>Don't have an account?</span>
         <Link to="/sign-up" className="text-[#00adb5] ">
-          Sign Up
+          Contact Admin
         </Link>
       </div>
       {error && (

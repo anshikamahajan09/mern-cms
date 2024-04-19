@@ -4,10 +4,11 @@ import { useState } from "react";
 import { FaIdCard } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SignInForm } from "../components/SignInForm";
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState("admin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,7 +19,27 @@ export default function SignIn() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    // Add your form submission logic here
+    try{
+      const res = await fetch(`/api/auth/sign-in/${userType}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if(data.success === false){
+        setError(data.message);
+        return;
+      }
+      navigate('/dashboard');
+    }
+    catch(err){
+      setError(err.message);
+      setLoading(false);
+    }
+    
   };
   const handleTabChange = (currentUserType) => {
     setError(null);
@@ -26,9 +47,12 @@ export default function SignIn() {
     setUserType(currentUserType);
   }
   const handleChange = (e) => {
+    setError(null);
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
   console.log(formData);
+
+  
   return (
     <div className="py-20 w-full px-10 sm:max-w-2xl mx-auto sm:py-20 ">
       <Tabs isFitted variant="enclosed">
