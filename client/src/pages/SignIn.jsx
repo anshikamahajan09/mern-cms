@@ -1,19 +1,20 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-import { useTheme } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaIdCard } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { useNavigate } from "react-router-dom";
 import { SignInForm } from "../components/SignInForm";
+import { useDispatch} from "react-redux";
+import { signInSuccess } from "../redux/user/userSlice";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [userType, setUserType] = useState("admin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const theme = useTheme();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +34,9 @@ export default function SignIn() {
         setError(data.message);
         return;
       }
+      dispatch(signInSuccess(data));
       navigate('/dashboard');
+      
     }
     catch(err){
       setError(err.message);
