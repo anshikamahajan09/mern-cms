@@ -1,13 +1,16 @@
 import { Button, Navbar} from "flowbite-react";
 import { Link } from "react-router-dom";
-
 import { FaMoon, FaSun } from "react-icons/fa";
-
+import { useSelector, useDispatch } from "react-redux";
+import { toggleTheme } from "../redux/theme/themeSlice";
 
 export default function Header() {
+  const {theme} = useSelector((state) => state.theme);
+  const dispatch = useDispatch();
+
+
   return (
-    <div className="px-10 pt-5">
-      <Navbar className="bg-[#222831] ">
+      <div className="dark:bg-[#222831] px-10 pt-5 pb-4 flex justify-between bg-white">
         <Link
           to="/"
           className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
@@ -19,9 +22,9 @@ export default function Header() {
           <span className="text-gray-400  text-xl sm:text-2xl ml-1">Flow</span>
         </Link>
         <div className="flex gap-2 md:order-2">
-          <Button className="w-12 h-10 hidden sm:inline bg-black" gradientDuoTone='greenToBlue' pill>
-            {/* {theme === "light" ? <FaMoon /> : <FaSun />} */}
-            <FaMoon />
+          <Button className="w-12 h-10 hidden sm:inline bg-black" gradientDuoTone='greenToBlue' pill onClick={()=>dispatch(toggleTheme())}>
+            {theme === "light" ? <FaMoon /> : <FaSun />}
+            
           </Button>
 
           {/* {currentUser ? (
@@ -83,7 +86,6 @@ export default function Header() {
           Projects
         </Link>
       </Navbar.Collapse> */}
-      </Navbar>
-    </div>
+      </div>
   );
 }

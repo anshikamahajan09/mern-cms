@@ -12,7 +12,7 @@ export function SignInForm({
     <div className="flex-1">
       <form onSubmit={handleFormSubmit} className="flex flex-col gap-5">
         <div>
-          <Label className="text-[#eeeeee]" value="Your email" />
+          <Label className="dark:text-[#eeeeee] text-[#222831]" value="Your email" />
           <TextInput
             className="mt-2"
             type="email"
@@ -23,7 +23,7 @@ export function SignInForm({
           />
         </div>
         <div>
-          <Label className="text-[#eeeeee]" value="Your password" />
+          <Label className="dark:text-[#eeeeee] text-[#222831]" value="Your password" />
           <TextInput
             className="mt-2"
             type="password"
