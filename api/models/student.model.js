@@ -9,12 +9,14 @@ const studentInfoSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
+      unique:true
     },
     rollno: {
       type: String,
       min: 10,
       max: 10,
       required: true,
+      unique:true
     },
     password: {
       type: String,
@@ -43,6 +45,7 @@ const studentAcademicSchema = new mongoose.Schema(
     rollno: {
       type: String,
       required: true,
+      unique:true
     },
     department: {
       type: String,

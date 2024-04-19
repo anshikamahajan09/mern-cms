@@ -1,17 +1,14 @@
 import { Label, TextInput, Button, Spinner, Alert } from "flowbite-react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function SignInForm({ userType }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    
-  };
+export function SignInForm({
+  userType,
+  formData,
+  handleChange,
+  handleFormSubmit,
+  loading,
+  error,
+}) {
   return (
     <div className="flex-1">
       <form onSubmit={handleFormSubmit} className="flex flex-col gap-5">
@@ -20,8 +17,10 @@ export default function SignInForm({ userType }) {
           <TextInput
             className="mt-2"
             type="email"
+            onChange={handleChange}
             placeholder="name@company.com"
             id="email"
+            value={formData.email}
           />
         </div>
         <div>
@@ -29,8 +28,10 @@ export default function SignInForm({ userType }) {
           <TextInput
             className="mt-2"
             type="password"
+            onChange={handleChange}
             placeholder="Password"
             id="password"
+            value={formData.password}
           />
         </div>
         <Button
