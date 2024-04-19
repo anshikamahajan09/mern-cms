@@ -1,24 +1,23 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-import { useTheme } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaIdCard } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { useNavigate } from "react-router-dom";
 import { SignInForm } from "../components/SignInForm";
+import { useDispatch, useSelector} from "react-redux";
+import { signInSuccess, signInFailure, signInStart } from "../redux/user/userSlice";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {loading, error} = useSelector((state) => state.user);
   const [userType, setUserType] = useState("admin");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const theme = useTheme();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    dispatch(signInStart());
     try{
       const res = await fetch(`/api/auth/sign-in/${userType}`, {
         method: "POST",
@@ -28,28 +27,27 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      setLoading(false);
       if(data.success === false){
-        setError(data.message);
+        dispatch(signInFailure(data.message));
         return;
       }
-      navigate('/dashboard');
+      const {password : pass , ...rest} = data;
+      dispatch(signInSuccess(rest));
+      navigate('/dashboard'); 
     }
     catch(err){
-      setError(err.message);
-      setLoading(false);
+      dispatch(signInFailure(err.message));
     }
     
   };
   const handleTabChange = (currentUserType) => {
-    setError(null);
     setFormData({ email: "", password: "" });
     setUserType(currentUserType);
   }
   const handleChange = (e) => {
-    setError(null);
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+  
 
   return (
     <div className="py-20 w-full px-10 sm:max-w-2xl mx-auto sm:py-20 ">
@@ -132,8 +130,7 @@ export default function SignIn() {
                 loading={loading}
                 error={error}
               />
-            </TabPanel>
-            
+            </TabPanel> 
           </TabPanels>
         </div>
       </Tabs>
