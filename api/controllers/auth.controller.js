@@ -77,3 +77,13 @@ export const signUp = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const signOut = async(req, res, next) => {
+  try{
+    res.clearCookie('jwt').status(200).json('Logged out')
+  }
+  catch(err){
+    next(err);
+  }
+}
