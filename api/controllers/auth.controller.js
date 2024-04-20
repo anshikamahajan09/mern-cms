@@ -61,7 +61,7 @@ export const signUp = async (req, res, next) => {
     default:
       return next(errorHandler(400, "Invalid user type"));
   }
-  try {
+  try { 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return next(errorHandler(400, `${(userType).charAt(0).toUpperCase()+userType.slice(1)} already exists`));
@@ -77,3 +77,13 @@ export const signUp = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const signOut = async(req, res, next) => {
+  try{
+    res.clearCookie('jwt').status(200).json('Logged out')
+  }
+  catch(err){
+    next(err);
+  }
+}
