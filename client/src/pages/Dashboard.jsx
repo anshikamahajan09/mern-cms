@@ -1,5 +1,11 @@
-export default function Dashboard() {
+import React from 'react'
+
+function Dashboard() {
   return (
-    <div className="text-white">Dashboard</div>
+    <div>
+      
+    </div>
   )
 }
+
+export default Dashboard
