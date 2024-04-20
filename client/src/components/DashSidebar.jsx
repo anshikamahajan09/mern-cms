@@ -6,7 +6,7 @@ import {
   HiArrowSmRight,
   HiBadgeCheck,
   HiCalendar,
-  HiChartPie, 
+  HiChartPie,
   HiDocumentText,
   HiOfficeBuilding,
   HiOutlineUserGroup,
@@ -18,12 +18,15 @@ import { GiNotebook, GiBookshelf } from "react-icons/gi";
 import { FaClipboardList } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { signOutFailure, signOutSuccess } from "../redux/user/userSlice";
 
 export default function DashSidebar() {
   const location = useLocation();
   const [tab, setTab] = useState("");
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
@@ -31,11 +34,22 @@ export default function DashSidebar() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
-  const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
 
+  const handleSignOut = async () => {
+    try {
+      const res = await fetch("/api/auth/sign-out");
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signOutFailure(data.message));
+        return;
+      }
+      dispatch(signOutSuccess());
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
-    <div className="md:w-56 w-full">
+    <div className="w-56 hidden md:inline-block">
       <Sidebar className="w-full ">
         <Sidebar.Items>
           <Sidebar.ItemGroup className="flex flex-col gap-1">
@@ -103,27 +117,27 @@ export default function DashSidebar() {
                     Attendence
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=grades">
+                <Link to="/dashboard?tab=grades-all">
                   <Sidebar.Item
-                    active={tab === "grades"}
+                    active={tab === "grades-all"}
                     icon={HiAcademicCap}
                     as={"div"}
                   >
                     Grades
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=notices">
+                <Link to="/dashboard?tab=add-notice">
                   <Sidebar.Item
-                    active={tab === "notices"}
+                    active={tab === "add-notice"}
                     icon={FaClipboardList}
                     as={"div"}
                   >
                     Notices
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=complaints">
+                <Link to="/dashboard?tab=see-complaints">
                   <Sidebar.Item
-                    active={tab === "complaints"}
+                    active={tab === "see-complaints"}
                     icon={GiNotebook}
                     as={"div"}
                   >
@@ -161,18 +175,18 @@ export default function DashSidebar() {
                     Mark attendence
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=assignments">
+                <Link to="/dashboard?tab=add-assignment">
                   <Sidebar.Item
-                    active={tab === "assignments"}
+                    active={tab === "add-assignment"}
                     icon={HiDocumentText}
                     as={"div"}
                   >
                     Assignments
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=notices">
+                <Link to="/dashboard?tab=add-notice">
                   <Sidebar.Item
-                    active={tab === "notices"}
+                    active={tab === "add-notice"}
                     icon={FaClipboardList}
                     as={"div"}
                   >
@@ -228,27 +242,27 @@ export default function DashSidebar() {
                     Progress
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=assignments">
+                <Link to="/dashboard?tab=see-assignment">
                   <Sidebar.Item
-                    active={tab === "assignments"}
+                    active={tab === "see-assignment"}
                     icon={HiDocumentText}
                     as={"div"}
                   >
                     Assignments
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=notices">
+                <Link to="/dashboard?tab=see-notice">
                   <Sidebar.Item
-                    active={tab === "notices"}
+                    active={tab === "see-notice"}
                     icon={FaClipboardList}
                     as={"div"}
                   >
                     Notices
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=complaints">
+                <Link to="/dashboard?tab=add-complaints">
                   <Sidebar.Item
-                    active={tab === "complaints"}
+                    active={tab === "add-complaints"}
                     icon={GiNotebook}
                     as={"div"}
                   >
@@ -267,11 +281,11 @@ export default function DashSidebar() {
               </>
             )}
           </Sidebar.ItemGroup>
-          <Sidebar.ItemGroup >
-          <Sidebar.Item icon={HiArrowSmRight}>
+          <Sidebar.ItemGroup>
+            <Sidebar.Item icon={HiArrowSmRight} onClick={handleSignOut}>
               <span className="cursor-pointer">Sign Out</span>
             </Sidebar.Item>
-            </Sidebar.ItemGroup>
+          </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>
     </div>
