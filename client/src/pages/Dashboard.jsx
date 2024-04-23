@@ -4,6 +4,7 @@ import DashSidebar from "../components/DashSidebar";
 import DashboardAdmin from "../components/DashboardAdmin";
 import DashboardStudent from "../components/DashboardStudent";
 import { useSelector } from "react-redux";
+import ShowAttendance from "../components/ShowAttendance";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -25,6 +26,7 @@ export default function Dashboard() {
       <DashSidebar />
       {currentUser.isAdmin && (tab === 'dashboard' || !tab) && <DashboardAdmin />}
       {currentUser.isStudent && (tab === 'dashboard' || !tab) && <DashboardStudent />}
+      {tab === 'show-attendance' && <ShowAttendance/>}
     </div>
   );
 }
