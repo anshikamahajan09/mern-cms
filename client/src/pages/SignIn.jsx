@@ -15,7 +15,6 @@ export default function SignIn() {
   const {loading, error} = useSelector((state) => state.user);
   const [userType, setUserType] = useState("admin");
   const [formData, setFormData] = useState({ email: "", password: "" });
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     dispatch(signInStart());
@@ -34,7 +33,7 @@ export default function SignIn() {
       }
       const {password : pass , ...rest} = data;
       dispatch(signInSuccess(rest));
-      navigate('/dashboard'); 
+      navigate(`/${userType}`); 
     }
     catch(err){
       dispatch(signInFailure(err.message));

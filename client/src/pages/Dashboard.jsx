@@ -2,11 +2,13 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DashSidebar from "../components/DashSidebar";
 import DashboardAdmin from "../components/DashboardAdmin";
+import DashboardStudent from "../components/DashboardStudent";
+import { useSelector } from "react-redux";
 
 export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState("");
-  
+  const { currentUser } = useSelector((state) => state.user);
   
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -21,8 +23,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex flex-row">
       <DashSidebar />
-      {tab === 'profile' && <DashboardAdmin />}
-     
+      {currentUser.isAdmin && (tab === 'dashboard' || !tab) && <DashboardAdmin />}
+      {currentUser.isStudent && (tab === 'dashboard' || !tab) && <DashboardStudent />}
     </div>
   );
 }

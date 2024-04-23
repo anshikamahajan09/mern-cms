@@ -53,9 +53,18 @@ export default function DashSidebar() {
       <Sidebar className="w-full ">
         <Sidebar.Items>
           <Sidebar.ItemGroup className="flex flex-col gap-1">
-            <Link to="/dashboard?tab=profile">
+          <Link to={`/${currentUser.userType}?tab=dashboard`}>
               <Sidebar.Item
-                active={tab === "profile" || tab === ""}
+                active={tab ===  "dashboard" || tab === ''}
+                icon={HiChartPie}
+                as={"div"}
+              >
+                Dashboard
+              </Sidebar.Item>
+            </Link>
+            <Link to={`/${currentUser.userType}?tab=profile`}>
+              <Sidebar.Item
+                active={tab === `profile`}
                 icon={HiUser}
                 label={
                   currentUser.isAdmin
@@ -70,9 +79,10 @@ export default function DashSidebar() {
                 Profile
               </Sidebar.Item>
             </Link>
+            
             {currentUser.isAdmin && (
               <>
-                <Link to="/dashboard?tab=students">
+                <Link to={`/${currentUser.userType}?tab=students`}>
                   <Sidebar.Item
                     active={tab === "students"}
                     icon={HiUserGroup}
@@ -81,7 +91,7 @@ export default function DashSidebar() {
                     Manage students
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=faculty-members">
+                <Link to={`/${currentUser.userType}?tab=faculty-members`}>
                   <Sidebar.Item
                     active={tab === "faculty-members"}
                     icon={HiUserGroup}
@@ -90,7 +100,7 @@ export default function DashSidebar() {
                     Manage Faculty
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=courses">
+                <Link to={`/${currentUser.userType}?tab=courses`}>
                   <Sidebar.Item
                     active={tab === "courses"}
                     icon={GiBookshelf}
@@ -99,7 +109,7 @@ export default function DashSidebar() {
                     Courses
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=departments">
+                <Link to={`/${currentUser.userType}?tab=departments`}>
                   <Sidebar.Item
                     active={tab === "departments"}
                     icon={HiOfficeBuilding}
@@ -108,7 +118,7 @@ export default function DashSidebar() {
                     Departments
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=attendence">
+                <Link to={`/${currentUser.userType}?tab=attendence`}>
                   <Sidebar.Item
                     active={tab === "attendence"}
                     icon={HiCalendar}
@@ -117,7 +127,7 @@ export default function DashSidebar() {
                     Attendence
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=grades-all">
+                <Link to={`/${currentUser.userType}?tab=grades-all`}>
                   <Sidebar.Item
                     active={tab === "grades-all"}
                     icon={HiAcademicCap}
@@ -126,7 +136,7 @@ export default function DashSidebar() {
                     Grades
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=add-notice">
+                <Link to={`/${currentUser.userType}?tab=add-notice`}>
                   <Sidebar.Item
                     active={tab === "add-notice"}
                     icon={FaClipboardList}
@@ -135,7 +145,7 @@ export default function DashSidebar() {
                     Notices
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=see-complaints">
+                <Link to={`/${currentUser.userType}?tab=see-complaints`}>
                   <Sidebar.Item
                     active={tab === "see-complaints"}
                     icon={GiNotebook}
@@ -148,7 +158,7 @@ export default function DashSidebar() {
             )}
             {currentUser.isFaculty && (
               <>
-                <Link to="/dashboard?tab=students">
+                <Link to={`/${currentUser.userType}?tab=students`}>
                   <Sidebar.Item
                     active={tab === "students"}
                     icon={HiOutlineUserGroup}
@@ -157,7 +167,7 @@ export default function DashSidebar() {
                     Manage students
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=upload-marks">
+                <Link to={`/${currentUser.userType}?tab=upload-marks`}>
                   <Sidebar.Item
                     active={tab === "upload-marks"}
                     icon={HiUpload}
@@ -166,7 +176,7 @@ export default function DashSidebar() {
                     Upload marks
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=mark-attendence">
+                <Link to={`/${currentUser.userType}?tab=mark-attendence`}>
                   <Sidebar.Item
                     active={tab === "mark-attendence"}
                     icon={HiCalendar}
@@ -175,7 +185,7 @@ export default function DashSidebar() {
                     Mark attendence
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=add-assignment">
+                <Link to={`/${currentUser.userType}?tab=add-assignment`}>
                   <Sidebar.Item
                     active={tab === "add-assignment"}
                     icon={HiDocumentText}
@@ -184,7 +194,7 @@ export default function DashSidebar() {
                     Assignments
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=add-notice">
+                <Link to={`/${currentUser.userType}?tab=add-notice`}>
                   <Sidebar.Item
                     active={tab === "add-notice"}
                     icon={FaClipboardList}
@@ -193,7 +203,7 @@ export default function DashSidebar() {
                     Notices
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=complaints">
+                <Link to={`/${currentUser.userType}?tab=complaints`}>
                   <Sidebar.Item
                     active={tab === "complaints"}
                     icon={GiNotebook}
@@ -206,7 +216,7 @@ export default function DashSidebar() {
             )}
             {currentUser.isStudent && (
               <>
-                <Link to="/dashboard?tab=courses">
+                <Link to={`/${currentUser.userType}?tab=courses`}>
                   <Sidebar.Item
                     active={tab === "courses"}
                     icon={HiBadgeCheck}
@@ -215,7 +225,7 @@ export default function DashSidebar() {
                     Courses enrolled
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=show-attendence">
+                <Link to={`/${currentUser.userType}?tab=show-attendence`}>
                   <Sidebar.Item
                     active={tab === "show-attendence"}
                     icon={HiCalendar}
@@ -224,7 +234,7 @@ export default function DashSidebar() {
                     Show Attendence
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=grades">
+                <Link to={`/${currentUser.userType}?tab=grades`}>
                   <Sidebar.Item
                     active={tab === "grades"}
                     icon={HiAcademicCap}
@@ -233,7 +243,7 @@ export default function DashSidebar() {
                     Grades
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=progress">
+                <Link to={`/${currentUser.userType}?tab=progress`}>
                   <Sidebar.Item
                     active={tab === "progress"}
                     icon={HiChartPie}
@@ -242,7 +252,7 @@ export default function DashSidebar() {
                     Progress
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=see-assignment">
+                <Link to={`/${currentUser.userType}?tab=see-assignment`}>
                   <Sidebar.Item
                     active={tab === "see-assignment"}
                     icon={HiDocumentText}
@@ -251,7 +261,7 @@ export default function DashSidebar() {
                     Assignments
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=see-notice">
+                <Link to={`/${currentUser.userType}?tab=see-notice`}>
                   <Sidebar.Item
                     active={tab === "see-notice"}
                     icon={FaClipboardList}
@@ -260,7 +270,7 @@ export default function DashSidebar() {
                     Notices
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=add-complaints">
+                <Link to={`/${currentUser.userType}?tab=add-complaints`}>
                   <Sidebar.Item
                     active={tab === "add-complaints"}
                     icon={GiNotebook}
@@ -269,7 +279,7 @@ export default function DashSidebar() {
                     Complaints
                   </Sidebar.Item>
                 </Link>
-                <Link to="/dashboard?tab=remarks">
+                <Link to={`/${currentUser.userType}?tab=remarks`}>
                   <Sidebar.Item
                     active={tab === "remarks"}
                     icon={HiAnnotation}
