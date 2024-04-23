@@ -31,7 +31,7 @@ function DashboardAdmin() {
   });
   const options = {
     chart: {
-      height: "100%",
+      height: "85%",
       maxWidth: "100%",
       type: "area",
       fontFamily: "Inter, sans-serif",
@@ -102,10 +102,10 @@ function DashboardAdmin() {
   };
 
   const options2 = {
-    series: [40.0, 35.0, 10.0, 15.0 ],
+    series: [40.0, 35.0, 10.0, 15.0],
     colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
     chart: {
-      height: 420,
+      height: "420",
       width: "100%",
       type: "pie",
     },
@@ -124,7 +124,7 @@ function DashboardAdmin() {
         },
       },
     },
-    labels: ["CSE", "Bussiness Administration", "Marine" , "Pharmacy"],
+    labels: ["CSE", "Bussiness Administration", "Marine", "Pharmacy"],
     dataLabels: {
       enabled: true,
       style: {
@@ -181,10 +181,12 @@ function DashboardAdmin() {
   }, []);
 
   return (
-    <main className="text-white w-full p-6">
+    <main className="text-white w-full p-6 sm:pl-64">
       <h1 className="text-3xl font-bold border-b-1 mb-6 text-center sm:text-left">
         Admin Dashboard
       </h1>
+
+      {/* top cards */}
       <div className="flex flex-col sm:flex-row justify-between gap-y-8 mb-6">
         <Card href="#" className="max-w-xl cursor-default">
           <div className="flex  justify-between sm:gap-14 ">
@@ -287,10 +289,11 @@ function DashboardAdmin() {
           </div>
         </Card>
       </div>
-      <div className="flex flex-col gap-y-8 gap-x-8   sm:flex-row">
 
-      {/* both charts in it */}
-        <div className="flex-1 gap-8 flex justify-between  rounded-lg">
+      <div className=" flex flex-col gap-y-8 sm:flex-row gap-x-8">
+        {/* both charts in it */}
+
+        <div className="justify-between flex flex-1 max-h-[400px]  sm:max-h-[500px] gap-4  rounded-lg">
           {/* first chart */}
           <div className="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
             <div className="flex justify-between">
@@ -323,8 +326,7 @@ function DashboardAdmin() {
             </div>
             <div id="area-chart"></div>
           </div>
-          {/*  second chart */}
-
+          {/*  second chart */} 
           <div className="w-full rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
             <div className="flex justify-between items-start w-full">
               {/* Website traffic */}
@@ -341,13 +343,13 @@ function DashboardAdmin() {
           </div>
         </div>
 
-      {/* announcements */}
-        <div className="w-full h-auto sm:w-1/4">
-          <div className="flex items-center">
-            <p className="font-semibold text-4xl sm:text-2xl sm:pl-6 pr-2 ">
+        {/* announcements */}
+        <div className="w-full h-auto sm:w-1/4 ">
+          <div className="flex items-center py-4 ">
+            <p className="font-semibold text-4xl sm:text-2xl  sm:pl-6 pr-2 ">
               Recent Annoucements
             </p>
-            <TfiAnnouncement size={40} />
+            <TfiAnnouncement size={30} />
           </div>
 
           <Timeline>
@@ -398,7 +400,6 @@ function DashboardAdmin() {
             </TimelineItem>
           </Timeline>
         </div>
-
       </div>
     </main>
   );

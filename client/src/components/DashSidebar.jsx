@@ -49,8 +49,8 @@ export default function DashSidebar() {
     }
   };
   return (
-    <div className="w-56 hidden md:inline-block">
-      <Sidebar className="w-full ">
+    <div className="w-56 hidden md:inline-block fixed z-[100] h-full">
+      <Sidebar className="w-full">
         <Sidebar.Items>
           <Sidebar.ItemGroup className="flex flex-col gap-1">
           <Link to={`/${currentUser.userType}?tab=dashboard`}>
