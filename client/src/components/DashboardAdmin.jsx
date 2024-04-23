@@ -21,6 +21,9 @@ import {
   TimelineTitle,
 } from "flowbite-react";
 import { HiArrowNarrowRight } from "react-icons/hi";
+import { Banner } from "flowbite-react";
+import { HiArrowRight, HiX } from "react-icons/hi";
+import { MdPercent } from "react-icons/md";
 
 function DashboardAdmin() {
   const [trend, setTrend] = useState({
@@ -290,61 +293,85 @@ function DashboardAdmin() {
         </Card>
       </div>
 
-      <div className=" flex flex-col gap-y-8 sm:flex-row gap-x-8">
-        {/* both charts in it */}
-
-        <div className="justify-between flex flex-1 max-h-[400px]  sm:max-h-[500px] gap-4  rounded-lg">
-          {/* first chart */}
-          <div className="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-            <div className="flex justify-between">
-              <div>
-                <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">
-                  2.4k
-                </h5>
-                <p className="text-base font-normal text-gray-500 dark:text-gray-400">
-                  Addmissions this year
-                </p>
-              </div>
-              <div className="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
-                12%
-                <svg
-                  className="w-3 h-3 ms-1"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 10 14"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13V1m0 0L1 5m4-4 4 4"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div id="area-chart"></div>
-          </div>
-          {/*  second chart */} 
-          <div className="w-full rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-            <div className="flex justify-between items-start w-full">
-              {/* Website traffic */}
-              <div className="flex-col items-center">
-                <div className="flex items-center mb-1">
-                  <h5 className="text-xl font-bold leading-none text-white me-1">
-                    Course Distribution
-                  </h5>
+      {/* bottom main */}
+      <div className=" flex flex-col  min-h-screen gap-y-8 sm:flex-row  gap-x-8">
+        <div className="flex flex-col min-h-full mt-6 flex-1 gap-y-6">
+          {/* both charts in it */}
+          <div className="flex  rounded-lg">
+            <Banner className="w-full">
+              <div className="flex w-full justify-between border-t rounded-lg border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-[#536878]">
+                <div className="mx-auto flex items-center">
+                  <p className="flex items-center text-sm font-normal text-gray-500 dark:text-white">
+                    <span className="[&_p]:inline">
+                      Something new ?&nbsp;
+                      <a
+                        href="https://flowbite.com"
+                        className="ml-0 flex items-center text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500 md:ml-1 md:inline-flex"
+                      >
+                        Make an annoucement
+                        <HiArrowRight className="ml-2" />
+                      </a>
+                    </span>
+                  </p>
                 </div>
               </div>
-            </div>
-            {/* Line Chart */}
-            <div className="py-6" id="pie-chart"></div>
+            </Banner>
           </div>
+          <div className="justify-between flex h-1/2 sm:h-3/4 gap-4  rounded-lg">
+            {/* first chart */}
+            <div className="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+              <div className="flex justify-between">
+                <div>
+                  <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">
+                    2.4k
+                  </h5>
+                  <p className="text-base font-normal text-gray-500 dark:text-gray-400">
+                    Addmissions this year
+                  </p>
+                </div>
+                <div className="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
+                  12%
+                  <svg
+                    className="w-3 h-3 ms-1"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 13V1m0 0L1 5m4-4 4 4"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div id="area-chart"></div>
+            </div>
+            {/*  second chart */}
+            <div className="w-full rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+              <div className="flex justify-between items-start w-full">
+                {/* Website traffic */}
+                <div className="flex-col items-center">
+                  <div className="flex items-center mb-1">
+                    <h5 className="text-xl font-bold leading-none text-white me-1">
+                      Course Distribution
+                    </h5>
+                  </div>
+                </div>
+              </div>
+              {/* Line Chart */}
+              <div className="py-6" id="pie-chart"></div>
+            </div>
+          </div>
+          {/* chat div */}
+          
         </div>
 
         {/* announcements */}
-        <div className="w-full h-auto sm:w-1/4 ">
+        <div className="w-full h-full sm:w-1/4 ">
           <div className="flex items-center py-4 ">
             <p className="font-semibold text-4xl sm:text-2xl  sm:pl-6 pr-2 ">
               Recent Annoucements

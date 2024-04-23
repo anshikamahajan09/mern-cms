@@ -225,13 +225,13 @@ export default function DashSidebar() {
                     Courses enrolled
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=show-attendence`}>
+                <Link to={`/${currentUser.userType}?tab=show-attendance`}>
                   <Sidebar.Item
-                    active={tab === "show-attendence"}
+                    active={tab === "show-attendance"}
                     icon={HiCalendar}
                     as={"div"}
                   >
-                    Show Attendence
+                    Show Attendance
                   </Sidebar.Item>
                 </Link>
                 <Link to={`/${currentUser.userType}?tab=grades`}>
