@@ -9,7 +9,7 @@ import { TfiAnnouncement } from "react-icons/tfi";
 import { HiCalendar } from "react-icons/hi";
 import ApexCharts from "apexcharts";
 import { Card } from "flowbite-react";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   Timeline,
@@ -41,6 +41,7 @@ function DashboardAdmin() {
       toolbar: {
         show: false,
       },
+      foreColor: "#9ca3af",
     },
     tooltip: {
       enabled: true,
@@ -58,10 +59,14 @@ function DashboardAdmin() {
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
+      style: {
+        colors: ["#0e9f6e"],
+      },
     },
     stroke: {
       width: 6,
+      curve: "smooth",
     },
     grid: {
       show: false,
@@ -74,33 +79,81 @@ function DashboardAdmin() {
     },
     series: [
       {
-        name: "New users",
-        data: [6500, 6418, 6456, 6526, 6356, 6456],
+        name: "Admissions",
+        data: [2345, 2112, 3024, 2980, 2389, 2473],
         color: "#1A56DB",
       },
     ],
     xaxis: {
-      categories: [
-        "01 February",
-        "02 February",
-        "03 February",
-        "04 February",
-        "05 February",
-        "06 February",
-        "07 February",
-      ],
+      categories: ["2019", "2020", "2021", "2022", "2023", "2024"],
       labels: {
+        show: true,
+      },
+      axisBorder: {
+        show: true,
+      },
+      axisTicks: {
+        show: true,
+      },
+    },
+    yaxis: {
+      show: true,
+    },
+  };
+
+  const options2 = {
+    series: [40.0, 35.0, 10.0, 15.0 ],
+    colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
+    chart: {
+      height: 420,
+      width: "100%",
+      type: "pie",
+    },
+    stroke: {
+      colors: ["#ffffff"],
+      lineCap: "",
+    },
+    plotOptions: {
+      pie: {
+        labels: {
+          show: true,
+        },
+        size: "100%",
+        dataLabels: {
+          offset: -25,
+        },
+      },
+    },
+    labels: ["CSE", "Bussiness Administration", "Marine" , "Pharmacy"],
+    dataLabels: {
+      enabled: true,
+      style: {
+        fontFamily: "Inter, sans-serif",
+      },
+    },
+    legend: {
+      position: "bottom",
+      fontFamily: "Inter, sans-serif",
+    },
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          return value + "%";
+        },
+      },
+    },
+    xaxis: {
+      labels: {
+        formatter: function (value) {
+          return value + "%";
+        },
+      },
+      axisTicks: {
         show: false,
       },
       axisBorder: {
         show: false,
       },
-      axisTicks: {
-        show: false,
-      },
-    },
-    yaxis: {
-      show: false,
     },
   };
 
@@ -112,6 +165,16 @@ function DashboardAdmin() {
       const chart = new ApexCharts(
         document.getElementById("area-chart"),
         options
+      );
+      chart.render();
+    }
+    if (
+      document.getElementById("pie-chart") &&
+      typeof ApexCharts !== "undefined"
+    ) {
+      const chart = new ApexCharts(
+        document.getElementById("pie-chart"),
+        options2
       );
       chart.render();
     }
@@ -224,16 +287,19 @@ function DashboardAdmin() {
           </div>
         </Card>
       </div>
-      <div className="flex flex-col gap-y-8 gap-x-8  sm:flex-row">
-        <div className="flex-1 bg-gray-600 mt-6 p-6 rounded-lg">
-          <div className="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+      <div className="flex flex-col gap-y-8 gap-x-8   sm:flex-row">
+
+      {/* both charts in it */}
+        <div className="flex-1 gap-8 flex justify-between  rounded-lg">
+          {/* first chart */}
+          <div className="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
             <div className="flex justify-between">
               <div>
                 <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">
-                  32.4k
+                  2.4k
                 </h5>
                 <p className="text-base font-normal text-gray-500 dark:text-gray-400">
-                  Users this week
+                  Addmissions this year
                 </p>
               </div>
               <div className="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
@@ -256,112 +322,29 @@ function DashboardAdmin() {
               </div>
             </div>
             <div id="area-chart"></div>
-            <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
-              <div className="flex justify-between items-center pt-5">
-                {/* Button */}
-                <button
-                  id="dropdownDefaultButton"
-                  data-dropdown-toggle="lastDaysdropdown"
-                  data-dropdown-placement="bottom"
-                  className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
-                  type="button"
-                >
-                  Last 7 days
-                  <svg
-                    className="w-2.5 m-2.5 ms-1.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 4 4 4-4"
-                    />
-                  </svg>
-                </button>
-                {/* Dropdown menu */}
-                <div
-                  id="lastDaysdropdown"
-                  className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-                >
-                  <ul
-                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdownDefaultButton"
-                  >
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Yesterday
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Today
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Last 7 days
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Last 30 days
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Last 90 days
-                      </a>
-                    </li>
-                  </ul>
+          </div>
+          {/*  second chart */}
+
+          <div className="w-full rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+            <div className="flex justify-between items-start w-full">
+              {/* Website traffic */}
+              <div className="flex-col items-center">
+                <div className="flex items-center mb-1">
+                  <h5 className="text-xl font-bold leading-none text-white me-1">
+                    Course Distribution
+                  </h5>
                 </div>
-                <a
-                  href="#"
-                  className="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2"
-                >
-                  Users Report
-                  <svg
-                    className="w-2.5 h-2.5 ms-1.5 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                </a>
               </div>
             </div>
+            {/* Line Chart */}
+            <div className="py-6" id="pie-chart"></div>
           </div>
         </div>
-        <div className="w-full sm:w-1/4">
+
+      {/* announcements */}
+        <div className="w-full h-auto sm:w-1/4">
           <div className="flex items-center">
-            <p className="font-semibold text-4xl sm:text-2xl sm:pl-6 pr-2 py-4">
+            <p className="font-semibold text-4xl sm:text-2xl sm:pl-6 pr-2 ">
               Recent Annoucements
             </p>
             <TfiAnnouncement size={40} />
@@ -415,6 +398,7 @@ function DashboardAdmin() {
             </TimelineItem>
           </Timeline>
         </div>
+
       </div>
     </main>
   );
