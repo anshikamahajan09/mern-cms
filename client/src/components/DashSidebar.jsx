@@ -49,8 +49,8 @@ export default function DashSidebar() {
     }
   };
   return (
-    <div className="w-56 hidden md:inline-block">
-      <Sidebar className="w-full ">
+    <div className="w-56 hidden md:inline-block fixed z-[100] h-full">
+      <Sidebar className="w-full">
         <Sidebar.Items>
           <Sidebar.ItemGroup className="flex flex-col gap-1">
           <Link to={`/${currentUser.userType}?tab=dashboard`}>
@@ -225,13 +225,13 @@ export default function DashSidebar() {
                     Courses enrolled
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=show-attendence`}>
+                <Link to={`/${currentUser.userType}?tab=show-attendance`}>
                   <Sidebar.Item
-                    active={tab === "show-attendence"}
+                    active={tab === "show-attendance"}
                     icon={HiCalendar}
                     as={"div"}
                   >
-                    Show Attendence
+                    Show Attendance
                   </Sidebar.Item>
                 </Link>
                 <Link to={`/${currentUser.userType}?tab=grades`}>
