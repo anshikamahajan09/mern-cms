@@ -17,14 +17,14 @@ import { HiArrowNarrowRight, HiCalendar } from "react-icons/hi";
 
 export default function DashboardStudent() {
   return (
-    <div className="p-7 w-full flex flex-col lg:flex-row gap-12">
+    <div className="p-7 w-full flex flex-col lg:flex-row gap-12 md:pl-64">
       {/* right */}
       <div className="flex flex-col w-full lg:w-3/4 gap-10 ">
         {/* top */}
         <div>
           <h1 className="text-center font-bold text-3xl ">Attendance</h1>
-          <div className="flex flex-wrap w-full justify-center gap-8 py-5">
-            <Card className="w-1/4 rounded-3xl flex flex-col gap-2 shadow-2xl border-0 min-w-[180px]">
+          <div className="flex flex-wrap w-full justify-center lg:justify-around gap-2 sm:gap-8 lg:gap-2 py-5">
+            <Card className="w-1/4 lg:max-w-[190px] lg:min-w-[200px] md:max-w-[220px]  rounded-3xl flex flex-col gap-2 shadow-2xl border-0 md:min-w-[200px] min-w-[170px] max-w-[210px]">
               <PiMathOperationsBold className="bg-indigo-600 text-white rounded-full text-5xl p-3 shadow-lg" />
               <h1 className="text-lg font-bold">Mathematical Engineering</h1>
               <h1 className="text-2xl font-bold">15/25</h1>
@@ -35,7 +35,7 @@ export default function DashboardStudent() {
                 text={`${60}%`}
               />
             </Card>
-            <Card className="w-1/4 rounded-3xl flex flex-col gap-2 shadow-2xl border-0 min-w-[180px]">
+            <Card className="w-1/4 lg:max-w-[190px] lg:min-w-[200px] md:max-w-[220px] rounded-3xl flex flex-col gap-2 shadow-2xl border-0 md:min-w-[200px]  min-w-[170px] max-w-[210px]">
               <AiFillDatabase className="bg-red-500 text-white rounded-full text-5xl p-3 shadow-lg" />
               <h1 className="text-lg font-bold">Database Management</h1>
               <h1 className="text-2xl font-bold">12/14</h1>
@@ -45,7 +45,7 @@ export default function DashboardStudent() {
                 text={`${86}%`}
               />
             </Card>
-            <Card className="w-1/4 rounded-3xl flex flex-col gap-2 shadow-2xl border-0 min-w-[180px]">
+            <Card className="w-1/4 lg:max-w-[190px] lg:min-w-[200px] md:max-w-[220px] rounded-3xl flex flex-col gap-2 shadow-2xl border-0 md:min-w-[200px]  min-w-[170px] max-w-[210px]">
               <MdComputer className="bg-lime-600 text-white rounded-full text-5xl p-3 shadow-lg" />
               <h1 className="text-lg font-bold">Object Oriented Programming</h1>
               <h1 className="text-2xl font-bold">27/29</h1>
@@ -55,7 +55,7 @@ export default function DashboardStudent() {
                 text={`${93}%`}
               />
             </Card>
-            <Card className="w-1/4 rounded-3xl flex flex-col gap-2 shadow-2xl border-0 min-w-[180px]">
+            <Card className="w-1/4 lg:max-w-[190px] lg:min-w-[200px] md:max-w-[220px] rounded-3xl flex flex-col gap-2 shadow-2xl border-0 md:min-w-[200px]  min-w-[170px] max-w-[210px]">
               <GiArtificialHive className="bg-teal-600 text-white rounded-full text-5xl p-3 shadow-lg" />
               <h1 className="text-lg font-bold">Artificial Intelligence</h1>
               <h1 className="text-2xl font-bold">27/30</h1>
