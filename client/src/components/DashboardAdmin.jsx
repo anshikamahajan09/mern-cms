@@ -184,7 +184,7 @@ function DashboardAdmin() {
   }, []);
 
   return (
-    <main className="text-white w-full p-6 sm:pl-64">
+    <main className="text-white w-full p-6 md:pl-64">
       <h1 className="text-3xl font-bold border-b-1 mb-6 text-center sm:text-left">
         Admin Dashboard
       </h1>
@@ -299,14 +299,14 @@ function DashboardAdmin() {
           {/* both charts in it */}
           <div className="flex  rounded-lg">
             <Banner className="w-full">
-              <div className="flex w-full justify-between border-t rounded-lg border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-[#536878]">
+              <div className="flex w-full justify-between border-t text-center rounded-lg border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-[#536878]">
                 <div className="mx-auto flex items-center">
-                  <p className="flex items-center text-sm font-normal text-gray-500 dark:text-white">
+                  <p className="flex items-center text-xs sm:text-sm font-normal text-gray-500 dark:text-white">
                     <span className="[&_p]:inline">
                       Something new ?&nbsp;
                       <a
                         href="https://flowbite.com"
-                        className="ml-0 flex items-center text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500 md:ml-1 md:inline-flex"
+                        className="ml-0 flex items-center text-xs sm:text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500 md:ml-1 md:inline-flex"
                       >
                         Make an annoucement
                         <HiArrowRight className="ml-2" />

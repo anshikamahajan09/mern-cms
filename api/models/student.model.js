@@ -2,7 +2,15 @@ import mongoose from "mongoose";
 
 const studentInfoSchema = new mongoose.Schema(
   {
-    name: {
+    fName : {
+      type: String,
+      required: true,
+    },
+    lName : {
+      type: String,
+      required: true,
+    },
+    gender: {
       type: String,
       required: true,
     },
@@ -30,10 +38,22 @@ const studentInfoSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    parentEmail: {
+      type: String,
+      required: true,
+    },
     isStudent: {
       type: Boolean,
       default: true,
     },
+    address : {
+      type: String,
+      required: true,
+    },
+    userType : {
+      type: String,
+      default: "student",
+    }
   },
   {
     timestamps: true,

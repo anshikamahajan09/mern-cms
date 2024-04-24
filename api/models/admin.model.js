@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const adminSchema = new mongoose.Schema(
   {
-    name: {
+    fName : {
+      type: String,
+      required: true,
+    },
+    lName : {
       type: String,
       required: true,
     },
@@ -19,6 +23,10 @@ const adminSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    gender: {
+      type: String,
+      required: true,
+    },
     phone: {
       unique:true,
       type: String,
@@ -28,6 +36,14 @@ const adminSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    address : {
+      type: String,
+      required: true,
+    },
+    userType : {
+      type: String,
+      default: "admin",
+    }
   },
   {
     timestamps: true,
