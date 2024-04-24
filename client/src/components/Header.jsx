@@ -12,7 +12,6 @@ export default function Header() {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-  console.log(isOpen);
   const handleSignOut = async () => {
     try {
       const res = await fetch("/api/auth/sign-out");
@@ -53,13 +52,13 @@ export default function Header() {
                   : currentUser.isFaculty
                   ? "Faculty"
                   : "Student"}
-                : @{currentUser.name}
+                : @{currentUser.fName + ' ' +currentUser.lName}
               </span>
              </div>
               <Dropdown
                 arrowIcon={false}
                 inline
-                label={<Avatar img={currentUser.profilePicture} rounded />}
+                label={<Avatar  img={currentUser.profilePicture} rounded />}
               >
                 <Dropdown.Header>
                   <span className="block">{currentUser.name}</span>

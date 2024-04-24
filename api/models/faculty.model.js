@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const facultySchema = new mongoose.Schema(
   {
-    name: {
+    fName : {
+      type: String,
+      required: true,
+    },
+    lName : {
       type: String,
       required: true,
     },
@@ -22,6 +26,10 @@ const facultySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    gender: {
+      type: String,
+      required: true,
+    },
     phone: {
       type: String,
       required: true,
@@ -34,6 +42,14 @@ const facultySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    address : {
+      type: String,
+      required: true,
+    },
+    userType : {
+      type: String,
+      default: "faculty",
+    }
   },
   {
     timestamps: true,
