@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRoute from './routes/auth.route.js';
+import facultyRoute from './routes/faculty.route.js';
+import studentRoute from './routes/student.route.js';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -18,6 +20,8 @@ mongoose.connect(process.env.MONGO)
 });
 app.use(cookieParser());
 app.use('/api/auth',authRoute);
+app.use('/api/faculty',facultyRoute);
+app.use('/api/student',studentRoute);
 
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;

@@ -141,8 +141,8 @@ const studentAttendanceSchema = new mongoose.Schema({
     required: true,
   },
   attendance: {
-    type: Number,
-    default: 0,
+    type: String,
+    required: true
   },
 });
 
