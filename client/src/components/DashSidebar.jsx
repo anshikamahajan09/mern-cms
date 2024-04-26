@@ -20,6 +20,8 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutFailure, signOutSuccess } from "../redux/user/userSlice";
+import { BiSolidDashboard } from "react-icons/bi";
+
 
 export default function DashSidebar() {
   const location = useLocation();
@@ -56,7 +58,7 @@ export default function DashSidebar() {
           <Link to={`/${currentUser.userType}?tab=dashboard`}>
               <Sidebar.Item
                 active={tab ===  "dashboard" || tab === ''}
-                icon={HiChartPie}
+                icon={BiSolidDashboard}
                 as={"div"}
               >
                 Dashboard
@@ -194,9 +196,9 @@ export default function DashSidebar() {
                     Assignments
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=add-notice`}>
+                <Link to={`/${currentUser.userType}?tab=notice-${currentUser.userType}`}>
                   <Sidebar.Item
-                    active={tab === "add-notice"}
+                    active={tab === `notice-${currentUser.userType}`}
                     icon={FaClipboardList}
                     as={"div"}
                   >
