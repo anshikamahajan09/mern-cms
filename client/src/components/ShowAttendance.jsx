@@ -1,32 +1,55 @@
 import {
-  Dropdown,
   Table,
-  TableBody,
-  TableHead,
-  TableCell,
-  TableHeadCell,
-  TableRow,
   Label,
-  TextInput,
   Select,
   Button,
   Datepicker,
 } from "flowbite-react";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import { HiAcademicCap } from "react-icons/hi";
+import { HiAcademicCap , HiCheckCircle, HiOutlineEmojiSad} from "react-icons/hi";
 import { PiMathOperationsBold } from "react-icons/pi";
+import { useState, useEffect } from "react";
+import {useSelector} from 'react-redux';
+import { coursesDetails } from "../utils";
 
 export default function ShowAttendance() {
+  const {currentUser}  = useSelector(state => state.user);
+  const {searchQuery, setSearchQuery} = useState({
+    rollno : currentUser.rollno,
+    department : currentUser.department,
+  });
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  useEffect(() => {
+    const fetchEnrolledCourses = async () => {
+      try {
+        const response = await fetch("/api/student/fetchEnrolledCourses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ rollno: currentUser.rollno }),
+        });
+        const data = await response.json();
+        setEnrolledCourses(data.courses);
+      } catch (error) {
+        console.error("Error fetching enrolled courses:", error);
+      }
+    };
+    if (currentUser.rollno) {
+      fetchEnrolledCourses();
+    }
+  }, [currentUser.rollno]);
+  console.log(enrolledCourses);
   return (
     <div className="p-7 md:pl-64 w-full ">
       <h1 className="text-3xl font-semibold">Your Attendance</h1>
       <div className="w-full flex flex-col md:flex-row gap-10">
         {/* left */}
-        <div className="w-3/4 mt-5 flex flex-col gap-8">
+        <div className=" w-full sm:w-3/4 mt-5 flex flex-col gap-8">
           {/* top */}
           <div>
-            <div className="flex justify-around bg-[#1f2937] items-center py-5 rounded-xl">
-              <div>
+            <div className="flex px-6  justify-start gap-6 sm:gap-12 bg-[#1f2937] items-center py-5 rounded-xl">
+              {currentUser.userType != 'student' && (<div>
                 <Label
                   className="dark:text-gray-300 dark:pl-1"
                   value="Department"
@@ -36,7 +59,7 @@ export default function ShowAttendance() {
                   <option>Electronics</option>
                   <option>Electrical</option>
                 </Select>
-              </div>
+              </div>)}
               <div>
                 <Label
                   className="dark:text-gray-300 dark:pl-1"
@@ -54,9 +77,9 @@ export default function ShowAttendance() {
                   value="Subject"
                 />
                 <Select>
-                  <option>Maths</option>
-                  <option>Physics</option>
-                  <option>Chemistry</option>
+                  {enrolledCourses.map((course) => (
+                    <option value={course} key={course}>{coursesDetails[course].title}</option>
+                  ))}
                 </Select>
               </div>
               <div>
@@ -253,38 +276,38 @@ export default function ShowAttendance() {
           </div>
         </div>
         {/* right */}
-        <div className="w-1/4 mt-3 flex flex-col gap-8">
+        <div className="w-full sm:w-1/4 mt-3 flex flex-col gap-8">
           {/* top */}
-          <div>
-            <Datepicker inline />
+          <div className="hidden sm:inline">
+            <Datepicker onSelectedDateChanged={(date) => handleDateChange(date)} inline />
           </div>
           {/* bottom */}
-          <div className="flex flex-col gap-5 ">
-            <div className="bg-indigo-600 flex gap-4 p-3 items-center rounded-lg">
+          <div className="flex flex-col sm:gap-3 gap-5">
+            <div className="bg-indigo-600 flex gap-4 sm:p-3 p-6 items-center rounded-lg">
               <div>
-                <PiMathOperationsBold className="bg-white text-black rounded-full text-5xl p-3 shadow-lg" />
+                <HiAcademicCap className="bg-white text-black rounded-full text-5xl p-2 shadow-lg" />
               </div>
               <div>
                 <h1 className="text-2xl font-semibold">30</h1>
                 <p>Total lectures</p>
               </div>
             </div>
-            <div className="bg-red-500 flex gap-4 p-3 items-center rounded-lg">
+            <div className="bg-red-500 flex gap-4 sm:p-3 p-6 items-center rounded-lg">
               <div>
-                <PiMathOperationsBold className="bg-white text-black rounded-full text-5xl p-3 shadow-lg" />
+                <HiCheckCircle className="bg-white text-black rounded-full text-5xl p-2 shadow-lg" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold">30</h1>
-                <p>Total lectures</p>
+                <h1 className="text-2xl font-semibold">24</h1>
+                <p>Attended</p>
               </div>
             </div>
-            <div className="bg-lime-600 flex gap-4 p-3 items-center rounded-lg">
+            <div className="bg-lime-600 flex gap-4 sm:p-3 p-6 items-center rounded-lg">
               <div>
-                <PiMathOperationsBold className="bg-white text-black rounded-full text-5xl p-3 shadow-lg" />
+                <HiOutlineEmojiSad className="bg-white text-black rounded-full text-5xl p-2 shadow-lg" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold">30</h1>
-                <p>Total lectures</p>
+                <h1 className="text-2xl font-semibold">6</h1>
+                <p>Absent</p>
               </div>
             </div>
           </div>
