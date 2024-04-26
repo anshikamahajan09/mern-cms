@@ -9,6 +9,7 @@ import {
 import {
   Button,
   Card,
+  Table,
   Timeline,
   TimelineBody,
   TimelineContent,
@@ -17,9 +18,112 @@ import {
   TimelineTitle,
 } from "flowbite-react";
 import ApexCharts from "apexcharts";
+import { useState } from "react";
 import { useEffect } from "react";
+import { FcBearish, FcBullish } from "react-icons/fc";
+import { GrSchedules } from "react-icons/gr";
+import { useSelector } from "react-redux";
 
 export default function DashboardFaculty() {
+  const {currentUser} = useSelector((state) => state.user);
+  const options = {
+    colors: ["#1A56DB", "#FDBA8C"],
+    series: [
+      {
+        name: "Organic",
+        color: "#1A56DB",
+        data: [
+          { x: "Mon", y: 231 },
+          { x: "Tue", y: 122 },
+          { x: "Wed", y: 63 },
+          { x: "Thu", y: 421 },
+          { x: "Fri", y: 122 },
+          { x: "Sat", y: 323 },
+          { x: "Sun", y: 111 },
+        ],
+      },
+    ],
+    chart: {
+      type: "bar",
+      height: "291px",
+      fontFamily: "Inter, sans-serif",
+      toolbar: {
+        show: false,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: "70%",
+        borderRadiusApplication: "end",
+        borderRadius: 8,
+      },
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      style: {
+        fontFamily: "Inter, sans-serif",
+      },
+    },
+    states: {
+      hover: {
+        filter: {
+          type: "darken",
+          value: 1,
+        },
+      },
+    },
+    stroke: {
+      show: true,
+      width: 0,
+      colors: ["transparent"],
+    },
+    grid: {
+      show: false,
+      strokeDashArray: 4,
+      padding: {
+        left: 2,
+        right: 2,
+        top: -14,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      show: false,
+    },
+    xaxis: {
+      floating: false,
+      labels: {
+        show: true,
+        style: {
+          fontFamily: "Inter, sans-serif",
+          cssClass: "text-xs font-normal fill-gray-500 dark:fill-gray-400",
+        },
+      },
+      axisBorder: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+      },
+    },
+    yaxis: {
+      show: false,
+    },
+    fill: {
+      opacity: 1,
+    },
+  };
+  const [trend, setTrend] = useState({
+    students: "up",
+    attendance: "down",
+    marks: "up",
+  });
+
+
   const getChartOptions = () => {
     return {
       series: [35.1, 23.5, 2.4, 5.4],
@@ -73,7 +177,7 @@ export default function DashboardFaculty() {
           top: -2,
         },
       },
-      labels: ["Direct", "Sponsor", "Affiliate", "Email marketing"],
+      labels: ["DBMS", "AIML", "FEE", "Email marketing"],
       dataLabels: {
         enabled: false,
       },
@@ -158,101 +262,113 @@ export default function DashboardFaculty() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (
-  //     document.getElementById("area-chart") &&
-  //     typeof ApexCharts !== "undefined"
-  //   ) {
-  //     const chart = new ApexCharts(
-  //       document.getElementById("area-chart"),
-  //       options
-  //     );
-  //     chart.render();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (
+      document.getElementById("column-chart") &&
+      typeof ApexCharts !== "undefined"
+    ) {
+      const chart = new ApexCharts(
+        document.getElementById("column-chart"),
+        options
+      );
+      chart.render();
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      const res = await fetch("/api/faculty/fetchAttendance", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id:currentUser._id }),
+      });
+      const data = await res.json();
+      console.log(data);
+    };
+    fetchAttendance();
+  }, []);
 
   return (
     <div className="md:pl-64 p-7">
       <h1 className="text-3xl font-bold">Faculty Dashboard</h1>
-      <div className=" flex  w-full gap-8">
+      <div className=" flex  w-full gap-10">
         {/* left */}
         <div className="gap-10 w-3/4 flex flex-col">
           <div className="flex flex-wrap gap-4 justify-center mt-5">
             <div className="flex flex-col p-5 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md">
               <div className="flex justify-between">
                 <div>
-                  <h3 className="text-gray-500 text-md uppercase">
+                  <h3 className="text-3xl sm:text-xl  tracking-tight text-gray-900 dark:text-white">
                     Total Students
                   </h3>
-                  <p className="text-2xl">10</p>
+                  <p className="text-6xl sm:text-4xl text-[#4caf50]">10</p>
                 </div>
                 <HiOutlineUserGroup className="bg-teal-600 text-white rounded-full text-5xl p-3 shadow-lg" />
               </div>
-              <div className="flex gap-2 text-sm">
-                <span className="text-green-500 flex items-center">
-                  <HiArrowNarrowUp />
-                  {10}
-                </span>
-                <div className="text-gray-500">Last month</div>
+              <div className="flex gap-2">
+                {trend.students === "up" ? (
+                  <FcBullish size={30} />
+                ) : (
+                  <FcBearish size={30} />
+                )}
+                <p className="font-normal flex items-end text-gray-700 dark:text-gray-400">
+                  10% Higher Than Last Month
+                </p>
               </div>
             </div>
             <div className="flex flex-col p-5 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md">
               <div className="flex justify-between">
                 <div>
-                  <h3 className="text-gray-500 text-md uppercase">
-                    Total Comments
+                  <h3 className="text-3xl sm:text-xl  tracking-tight text-gray-900 dark:text-white">
+                    Average Attendance
                   </h3>
-                  <p className="text-2xl">14</p>
+                  <p className="text-6xl sm:text-4xl text-red-500">78%</p>
                 </div>
                 <HiAnnotation className="bg-indigo-600 text-white rounded-full text-5xl p-3 shadow-lg" />
               </div>
-              <div className="flex gap-2 text-sm">
-                <span className="text-green-500 flex items-center">
-                  <HiArrowNarrowUp />
-                  {12}
-                </span>
-                <div className="text-gray-500">Last month</div>
+              <div className="flex gap-2">
+                {trend.attendance === "up" ? (
+                  <FcBullish size={30} />
+                ) : (
+                  <FcBearish size={30} />
+                )}
+                <p className="font-normal flex items-end text-gray-700 dark:text-gray-400">
+                  7% Less Than Last Month
+                </p>
               </div>
             </div>
             <div className="flex flex-col p-5 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md">
               <div className="flex justify-between">
                 <div>
-                  <h3 className="text-gray-500 text-md uppercase">
-                    Total Posts
+                  <h3 className="text-3xl sm:text-xl  tracking-tight text-gray-900 dark:text-white">
+                    Upcoming Meeting
                   </h3>
-                  <p className="text-2xl">5</p>
+                  <p className="text-5xl sm:text-3xl text-[#4caf50]">
+                    9 days left
+                  </p>
                 </div>
-                <HiDocumentText className="bg-lime-600 text-white rounded-full text-5xl p-3 shadow-lg" />
+                <HiCalendar className="bg-lime-600 text-white rounded-full text-5xl p-3 shadow-lg" />
               </div>
-              <div className="flex gap-2 text-sm">
-                <span className="text-green-500 flex items-center">
-                  <HiArrowNarrowUp />
-                  {24}
-                </span>
-                <div className="text-gray-500">Last month</div>
+              <div className="flex gap-2 items-center mt-2">
+                <GrSchedules className="text-2xl" />
+                <p className="font-normal flex items-end text-gray-700 dark:text-gray-400 ">
+                  5th May 2024
+                </p>
               </div>
             </div>
           </div>
           {/* bottom */}
-          <div>
-            <div>
-              <div className="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+          <div className="flex gap-10">
+            <div className="w-1/2">
+              <div className=" w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
                 <div className="flex justify-between mb-3">
                   <div className="flex justify-center items-center">
                     <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
-                      Website traffic
+                      Course Enrollment Trend
                     </h5>
-                    <svg
-                      data-popover-target="chart-info"
-                      data-popover-placement="bottom"
-                      className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm0 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1-5.034V12a1 1 0 0 1-2 0v-1.418a1 1 0 0 1 1.038-.999 1.436 1.436 0 0 0 1.488-1.441 1.501 1.501 0 1 0-3-.116.986.986 0 0 1-1.037.961 1 1 0 0 1-.96-1.037A3.5 3.5 0 1 1 11 11.466Z" />
-                    </svg>
+                    
                     <div
                       data-popover
                       id="chart-info"
@@ -312,12 +428,65 @@ export default function DashboardFaculty() {
                 <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between"></div>
               </div>
             </div>
+            <div className="w-1/2">
+              <div className=" w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                <div className="flex justify-between pb-4 mb-4 ">
+                  <div className="flex items-center">
+                    <div>
+                      <h5 className="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
+                        3.4k
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div id="column-chart"></div>
+                <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between"></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h1 className=" font-semibold text-3xl my-5">Top Students</h1>
+            <Table hoverable className="shadow-md min-w-full">
+            <Table.Head>
+              <Table.HeadCell>Roll No.</Table.HeadCell>
+              <Table.HeadCell>Profile Picture</Table.HeadCell>
+              <Table.HeadCell>Name</Table.HeadCell>
+              <Table.HeadCell>CGPA</Table.HeadCell>
+            </Table.Head>
+            <Table.Body className="divide-y">
+                           
+              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>101</Table.Cell>
+                <Table.Cell><img className="h-10 w-10" src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"></img></Table.Cell>
+                <Table.Cell>Anuj Kumar</Table.Cell>
+                <Table.Cell>9.8</Table.Cell>
+              </Table.Row>              
+              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>101</Table.Cell>
+                <Table.Cell><img className="h-10 w-10" src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"></img></Table.Cell>
+                <Table.Cell>Anuj Kumar</Table.Cell>
+                <Table.Cell>9.8</Table.Cell>
+              </Table.Row>              
+              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>101</Table.Cell>
+                <Table.Cell><img className="h-10 w-10" src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"></img></Table.Cell>
+                <Table.Cell>Anuj Kumar</Table.Cell>
+                <Table.Cell>9.8</Table.Cell>
+              </Table.Row>              
+              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>101</Table.Cell>
+                <Table.Cell><img className="h-10 w-10" src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"></img></Table.Cell>
+                <Table.Cell>Anuj Kumar</Table.Cell>
+                <Table.Cell>9.8</Table.Cell>
+              </Table.Row>              
+            </Table.Body>
+          </Table>
           </div>
         </div>
         {/* right */}
         <div className="w-1/4">
           <div>
-            <h1 className=" font-bold text-3xl truncate">Announcements</h1>
+            <h1 className=" font-bold text-3xl truncate">Notices</h1>
             <Timeline className="mt-5">
               <TimelineItem>
                 <Timeline.Point icon={HiCalendar} />

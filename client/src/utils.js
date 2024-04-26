@@ -26,3 +26,9 @@ export const coursesDetails = {
         time : "02:30-04:30 PM"
     }
 }
+
+export const departmentCourses={
+    CSE : ["CS100","DBMS100","FEE100"],
+    BBA : ["ARCH100","MTH100"],
+    Pharma : ["MED100","PHS100"],
+}
