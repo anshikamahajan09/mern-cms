@@ -30,6 +30,7 @@ import { HiArrowNarrowRight, HiCalendar } from "react-icons/hi";
 export default function DashboardStudent() {
   const { currentUser } = useSelector((state) => state.user);
   const [attendanceData, setAttendanceData] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
@@ -52,9 +53,29 @@ export default function DashboardStudent() {
     }
   }, [currentUser.rollno]);
 
-  console.log(enrolledCourses);
-  console.log(attendanceData);
-  console.log(coursesDetails);
+  useEffect(()=>{
+    const fetchAnnoucements = async () => {
+      try{
+        const response = await fetch("/api/general/fetchAnnouncements", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userType: currentUser.userType }),
+        });
+        const data = await response.json();
+        setAnnouncements(data);
+      }
+      catch(err){
+        console.error("Error fetching announcements:", err);
+      }
+    }
+    if(currentUser.rollno){
+      fetchAnnoucements();
+    }
+  }, []);
+  console.log(announcements);
+
   useEffect(() => {
     const fetchAttendanceData = async () => {
       try {
@@ -82,7 +103,7 @@ export default function DashboardStudent() {
         {/* top */}
         <div>
           <h1 className="font-bold text-3xl ">Attendance</h1>
-          <div className="flex flex-wrap w-full  gap-2 sm:gap-8 lg:gap-4 py-5">
+          <div className="flex flex-wrap w-full justify-between sm:justify-start  gap-2 sm:gap-8 lg:gap-4 py-5">
             {enrolledCourses.map((enrolledCourseId) => {
               const data = attendanceData.find(
                 (data) => data.courseId === enrolledCourseId
@@ -139,7 +160,7 @@ export default function DashboardStudent() {
               <TableBody className="divide-y">
                 {enrolledCourses.map((enrolledCourseId) => { 
                   return (
-                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <TableRow key={enrolledCourseId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   {coursesDetails[enrolledCourseId].time}
                   </TableCell>
@@ -160,111 +181,29 @@ export default function DashboardStudent() {
         <div>
           <h1 className=" font-bold text-3xl truncate">Announcements</h1>
           <Timeline className="mt-5">
-            <TimelineItem>
+          {announcements.slice(0, 4).map((announcement) => {
+            const createdAt = new Date(announcement.createdAt);
+            const formattedDate = createdAt.toLocaleDateString('en-US', {
+              month: 'short',
+              day: '2-digit',
+              year: 'numeric'
+            });
+            return (
+              <TimelineItem key={announcement._id}>
               <Timeline.Point icon={HiCalendar} />
               <TimelineContent>
-                <TimelineTime>April 2024 - Examination Department</TimelineTime>
+                <TimelineTime>{formattedDate} - {announcement.dept}</TimelineTime>
                 {/* <img src={newPng}/> */}
                 <TimelineTitle>
-                  Revised Date Sheet BE {"(ECE)"} Regular & Reappear for End
-                  Term Examination May 2024
+                  {announcement.title}
                 </TimelineTitle>
-                <TimelineBody></TimelineBody>
-                <Button color="gray">
-                  Learn More
-                  <HiArrowNarrowRight className="ml-2 mt-1.5 h-3 w-3" />
-                </Button>
+                <TimelineBody>{announcement.content}</TimelineBody>
               </TimelineContent>
             </TimelineItem>
-            <TimelineItem>
-              <Timeline.Point icon={HiCalendar} />{" "}
-              <TimelineContent>
-                <TimelineTime>
-                  April 2024 - Office of Student Affairs
-                </TimelineTime>
-                <TimelineTitle>World Dance Day</TimelineTitle>
-                <TimelineBody>
-                  Dear all, we are celebrating World Dance Day on 29th April
-                  2022. All the students are requested to participate in the
-                  event. <br /> Thanks and Regards
-                  <br /> Office of Student Affairs
-                </TimelineBody>
-              </TimelineContent>
-            </TimelineItem>
-            <TimelineItem>
-              <Timeline.Point icon={HiCalendar} />
-              <TimelineContent>
-                <TimelineTime>March 2024 - Examination Department</TimelineTime>
-                <TimelineTitle>
-                  Result Declared BE MBA CSE 3RD SEM, BATCH 2022
-                </TimelineTitle>
-                <TimelineBody>
-                  Students may apply for the re-evaluation till 14.02.2024 only
-                  for Discrete Structure {'"22AS003"'}. No evaluation will be
-                  entitiled after the due date.
-                </TimelineBody>
-              </TimelineContent>
-            </TimelineItem>
+            )
+          })}
           </Timeline>
         </div>
-
-        {/* bottom */}
-        {/* <div >
-          <h1 className="font-bold text-3xl">Subject Teachers</h1>
-          <div className="mt-5 flex flex-col gap-3">
-            <Card className="w-full rounded-3xl shadow-2xl border-0 h-24">
-              <div className="flex items-center gap-5">
-                <div>
-                  <img
-                    src="https://tse2.mm.bing.net/th?id=OIP.Dn-8K_TiXbuob_1fMEFurQHaE7&pid=Api&P=0&h=180"
-                    alt=""
-                    className="rounded-full w-14 h-14 object-cover"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold">Mr. John Doe</h1>
-                  <h1 className="text-sm text-gray-400">
-                    Mathematical Engineering
-                  </h1>
-                </div>
-              </div>
-            </Card>
-            <Card className="w-full rounded-3xl shadow-2xl border-0 h-24">
-              <div className="flex items-center gap-5">
-                <div>
-                  <img
-                    src="https://tse2.mm.bing.net/th?id=OIP.Dn-8K_TiXbuob_1fMEFurQHaE7&pid=Api&P=0&h=180"
-                    alt=""
-                    className="rounded-full w-14 h-14 object-cover"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold">Mr. John Doe</h1>
-                  <h1 className="text-sm text-gray-400">
-                    Mathematical Engineering
-                  </h1>
-                </div>
-              </div>
-            </Card>
-            <Card className="w-full rounded-3xl shadow-2xl border-0 h-24">
-              <div className="flex items-center gap-5">
-                <div>
-                  <img
-                    src="https://tse2.mm.bing.net/th?id=OIP.Dn-8K_TiXbuob_1fMEFurQHaE7&pid=Api&P=0&h=180"
-                    alt=""
-                    className="rounded-full w-14 h-14 object-cover"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold">Mr. John Doe</h1>
-                  <h1 className="text-sm text-gray-400">
-                    Mathematical Engineering
-                  </h1>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div> */}
       </div>
     </div>
   );
