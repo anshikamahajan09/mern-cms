@@ -217,10 +217,10 @@ export default function Header() {
             </Link>
 
             <Link
-              to="/dashboard?tab=add-notice"
+              to={`/dashboard?tab=notice-${currentUser.userType}`}
               
               className={
-                path === "/dashboard?tab=add-notice"
+                path === `/dashboard?tab=notice-${currentUser.userType}`
                   ? "bg-cyan-700 text-white md:hidden dark:text-white md:bg-transparent md:text-cyan-700 block py-2 pl-3 pr-4 md:p-0"
                   : "block py-2 pl-3 pr-4 md:p-0 hover:bg-cyan-700 md:hidden"
               }

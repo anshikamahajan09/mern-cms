@@ -6,6 +6,9 @@ import DashboardStudent from "../components/DashboardStudent";
 import { useSelector } from "react-redux";
 import AdminProfile from "../components/AdminProfile";
 import ShowAttendance from "../components/ShowAttendance";
+import DashboardFaculty from "../components/DashboardFaculty";
+import FacultyNotice from "../components/FacultyNotice";
+import Students from "../components/Students";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -27,7 +30,11 @@ export default function Dashboard() {
       <DashSidebar />
       {currentUser.isAdmin && (tab === 'dashboard' || !tab) && <DashboardAdmin />}
       {currentUser.isStudent && (tab === 'dashboard' || !tab) && <DashboardStudent />}
+      {currentUser.isFaculty && (tab === 'dashboard' || !tab) && <DashboardFaculty />}
       {currentUser.isAdmin && (tab === 'profile') && <AdminProfile />}
+      {tab === 'show-attendance' && <ShowAttendance />}
+      {tab === 'notice-faculty' && <FacultyNotice />}
+      {tab === 'students' && <Students />}
     </div>
   );
 }

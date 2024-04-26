@@ -12,7 +12,7 @@ export default {
   plugins: [
     require('flowbite/plugin')({
         charts: true,
-    }),
+    }),require('tailwind-scrollbar'),
     // ... other plugins
   ],
 }
