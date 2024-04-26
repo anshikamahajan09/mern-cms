@@ -129,7 +129,7 @@ const studentMarksSchema = new mongoose.Schema({
       default: null,
     },
   },
-});
+},{timestamps: true});
 
 const studentAttendanceSchema = new mongoose.Schema({
   courseId: {
@@ -144,7 +144,7 @@ const studentAttendanceSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-});
+}, {timestamps: true});
 
 export const StudentAcademic = mongoose.model(
   "StudentAcademic",

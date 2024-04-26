@@ -74,7 +74,6 @@ export default function DashboardStudent() {
       fetchAnnoucements();
     }
   }, []);
-  console.log(announcements);
 
   useEffect(() => {
     const fetchAttendanceData = async () => {
@@ -95,7 +94,7 @@ export default function DashboardStudent() {
     if (currentUser.rollno) {
       fetchAttendanceData();
     }
-  }, [currentUser.rollno]);
+  }, []);
   return (
     <div className="p-7 w-full flex flex-col lg:flex-row gap-12 md:pl-64">
       {/* right */}

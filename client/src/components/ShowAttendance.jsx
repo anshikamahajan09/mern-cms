@@ -1,23 +1,65 @@
-import {
-  Table,
-  Label,
-  Select,
-  Button,
-  Datepicker,
-} from "flowbite-react";
+import { Table, Label, Select, Button, Datepicker } from "flowbite-react";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import { HiAcademicCap , HiCheckCircle, HiOutlineEmojiSad} from "react-icons/hi";
-import { PiMathOperationsBold } from "react-icons/pi";
+import {
+  HiAcademicCap,
+  HiCheckCircle,
+  HiOutlineEmojiSad,
+} from "react-icons/hi";
 import { useState, useEffect } from "react";
-import {useSelector} from 'react-redux';
+import { useSelector } from "react-redux";
 import { coursesDetails } from "../utils";
 
 export default function ShowAttendance() {
-  const {currentUser}  = useSelector(state => state.user);
-  const {searchQuery, setSearchQuery} = useState({
-    rollno : currentUser.rollno,
-    department : currentUser.department,
+  const { currentUser } = useSelector((state) => state.user);
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState({
+    rollno: currentUser.rollno,
+    sessionId: new Date().getFullYear() ,
+    courseId: "all",
+    month: new Date().toLocaleString("default", { month: "short" }), 
   });
+
+  const handleChange = (e) => {
+    setSearchQuery({ ...searchQuery, [e.target.id]: e.target.value });
+  };
+
+  useEffect(()=>{
+    const fetchAttendance = async() => {
+      try {
+        const response = await fetch("/api/faculty/fetchAttendance", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(searchQuery),
+        });
+        const data = await response.json();
+        setAttendanceData(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchAttendance();
+  }, []);
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/faculty/fetchAttendance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(searchQuery),
+      });
+      const data = await response.json();
+      setAttendanceData(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  console.log(attendanceData);
+
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
@@ -39,7 +81,9 @@ export default function ShowAttendance() {
       fetchEnrolledCourses();
     }
   }, [currentUser.rollno]);
-  console.log(enrolledCourses);
+
+  
+
   return (
     <div className="p-7 md:pl-64 w-full ">
       <h1 className="text-3xl font-semibold">Your Attendance</h1>
@@ -48,27 +92,33 @@ export default function ShowAttendance() {
         <div className=" w-full sm:w-3/4 mt-5 flex flex-col gap-8">
           {/* top */}
           <div>
-            <div className="flex px-6  justify-start gap-6 sm:gap-12 bg-[#1f2937] items-center py-5 rounded-xl">
-              {currentUser.userType != 'student' && (<div>
-                <Label
-                  className="dark:text-gray-300 dark:pl-1"
-                  value="Department"
-                />
-                <Select>
-                  <option>Computer Science</option>
-                  <option>Electronics</option>
-                  <option>Electrical</option>
-                </Select>
-              </div>)}
+            <form onSubmit={handleSearchSubmit} className="flex px-6  justify-start gap-6 sm:gap-12 bg-[#1f2937] items-center py-5 rounded-xl">
+              {currentUser.userType != "student" && (
+                <div>
+                  <Label
+                    className="dark:text-gray-300 dark:pl-1"
+                    value="Department"
+                  />
+                  <Select>
+                    <option>Computer Science</option>
+                    <option>Electronics</option>
+                    <option>Electrical</option>
+                  </Select>
+                </div>
+              )}
               <div>
                 <Label
                   className="dark:text-gray-300 dark:pl-1"
                   value="Session"
                 />
-                <Select>
-                  <option>2021-2022</option>
-                  <option>2022-2023</option>
-                  <option>2023-2024</option>
+                <Select
+                  id="sessionId"
+                  defaultValue="2024"
+                  onChange={handleChange}
+                >
+                  <option value="2022">2021-2022</option>
+                  <option value="2023">2022-2023</option>
+                  <option value="2024">2023-2024</option>
                 </Select>
               </div>
               <div>
@@ -76,35 +126,55 @@ export default function ShowAttendance() {
                   className="dark:text-gray-300 dark:pl-1"
                   value="Subject"
                 />
-                <Select>
+                <Select
+                  id="courseId"
+                  onChange={handleChange}
+                  defaultValue={"all"}
+                >
+                  <option value="all" key="all">
+                    All
+                  </option>
                   {enrolledCourses.map((course) => (
-                    <option value={course} key={course}>{coursesDetails[course].title}</option>
+                    <option value={course} key={course}>
+                      {coursesDetails[course].title}
+                    </option>
                   ))}
                 </Select>
               </div>
               <div>
                 <Label className="dark:text-gray-300 dark:pl-1" value="Month" />
-                <Select>
-                  <option>January</option>
-                  <option>February</option>
-                  <option>March</option>
-                  <option>April</option>
-                  <option>May</option>
-                  <option>June</option>
-                  <option>July</option>
-                  <option>August</option>
-                  <option>September</option>
-                  <option>October</option>
-                  <option>November</option>
-                  <option>December</option>
+                <Select
+                  id="month"
+                  onChange={handleChange}
+                  defaultValue={new Date().toLocaleString("default", {
+                    month: "short",
+                  })}
+                >
+                  <option value="all">All</option>
+                  <option value="Jan">January</option>
+                  <option value="Feb">February</option>
+                  <option value="Mar">March</option>
+                  <option value="Apr">April</option>
+                  <option value="May">May</option>
+                  <option value="Jun">June</option>
+                  <option value="Jul">July</option>
+                  <option value="Aug">August</option>
+                  <option value="Sep">September</option>
+                  <option value="Oct">October</option>
+                  <option value="Nov">November</option>
+                  <option value="Dec">December</option>
                 </Select>
               </div>
               <div>
-                <Button className="px-4 mt-6" gradientDuoTone="greenToBlue">
+                <Button
+                  type="submit"
+                  className="px-4 mt-6"
+                  gradientDuoTone="greenToBlue"
+                >
                   Search
                 </Button>
               </div>
-            </div>
+            </form>
           </div>
           {/* bottom */}
           <div>
@@ -272,14 +342,19 @@ export default function ShowAttendance() {
                 Show more
               </button>
             )} */}
-            <button className="text-teal-500 self-center w-full text-sm py-3">Show more</button>
+            <button className="text-teal-500 self-center w-full text-sm py-3">
+              Show more
+            </button>
           </div>
         </div>
         {/* right */}
         <div className="w-full sm:w-1/4 mt-3 flex flex-col gap-8">
           {/* top */}
           <div className="hidden sm:inline">
-            <Datepicker onSelectedDateChanged={(date) => handleDateChange(date)} inline />
+            <Datepicker
+              onSelectedDateChanged={(date) => handleChange(date)}
+              inline
+            />
           </div>
           {/* bottom */}
           <div className="flex flex-col sm:gap-3 gap-5">
