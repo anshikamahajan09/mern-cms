@@ -7,24 +7,47 @@ import {
 } from "react-icons/hi";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { coursesDetails } from "../utils";
+import { coursesDetails } from "../utils.js";
 
 export default function ShowAttendance() {
   const { currentUser } = useSelector((state) => state.user);
+  const [showMore, setShowMore] = useState(false);
   const [attendanceData, setAttendanceData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [endIndex, setEndIndex] = useState(4);
+  const [overAll , setOveraAll] = useState({
+    total: 0,
+    present: 0,
+    absent: 0,
+  })
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState({
     rollno: currentUser.rollno,
-    sessionId: new Date().getFullYear() ,
+    sessionId: new Date().getFullYear(),
     courseId: "all",
-    month: new Date().toLocaleString("default", { month: "short" }), 
+    month: new Date().toLocaleString("default", { month: "short" }),
   });
 
+  useEffect(()=>{
+    
+      let total = attendanceData.length
+      let present = attendanceData.filter(data=>data.attendance === "P").length
+      let absent =  attendanceData.filter(data=>data.attendance === "AB").length
+      setOveraAll({total,present,absent});
+    
+  }, [attendanceData]);
+  console.log(overAll);
+
   const handleChange = (e) => {
+    setError(false);
     setSearchQuery({ ...searchQuery, [e.target.id]: e.target.value });
   };
 
-  useEffect(()=>{
-    const fetchAttendance = async() => {
+  useEffect(() => {
+    setLoading("Wait, while we fetch your attendance data.");
+    setError(null);
+    setShowMore(false);
+    const fetchAttendance = async () => {
       try {
         const response = await fetch("/api/faculty/fetchAttendance", {
           method: "POST",
@@ -34,15 +57,35 @@ export default function ShowAttendance() {
           body: JSON.stringify(searchQuery),
         });
         const data = await response.json();
+        setLoading(false);
+        if (data.success === false) {
+          setError(
+            "Error fetching attendance data. Try again after some time time."
+          );
+          return;
+        }
         setAttendanceData(data);
+        if (data.length > 4) {
+          setShowMore(true);
+        } else {
+          setShowMore(false);
+        }
+        setError(null);
       } catch (err) {
         console.error(err);
+        setLoading(null);
+        setError(
+          "Error fetching attendance data. Try again after some time time."
+        );
       }
-    }
+    };
     fetchAttendance();
   }, []);
 
   const handleSearchSubmit = async (e) => {
+    setLoading("Wait, while we fetch your attendance data.");
+    setError(null);
+    searchQuery.startIndex = 0;
     e.preventDefault();
     try {
       const response = await fetch("/api/faculty/fetchAttendance", {
@@ -53,12 +96,28 @@ export default function ShowAttendance() {
         body: JSON.stringify(searchQuery),
       });
       const data = await response.json();
+      setLoading(false);
+      if (data.success === false) {
+        setError(
+          "Error fetching attendance data. Try again after some time time."
+        );
+        return;
+      }
       setAttendanceData(data);
+      if (data.length > 4) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
+      setError(null);
     } catch (err) {
       console.error(err);
+      setLoading(false);
+      setError(
+        "Error fetching attendance data. Try again after some time time."
+      );
     }
   };
-  console.log(attendanceData);
 
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   useEffect(() => {
@@ -82,7 +141,12 @@ export default function ShowAttendance() {
     }
   }, [currentUser.rollno]);
 
-  
+  const onShowMoreClick = () => {
+    setEndIndex(endIndex + 4);
+    if (endIndex + 4 >= attendanceData.length) {
+      setShowMore(false);
+    }
+  };
 
   return (
     <div className="p-7 md:pl-64 w-full ">
@@ -92,7 +156,10 @@ export default function ShowAttendance() {
         <div className=" w-full sm:w-3/4 mt-5 flex flex-col gap-8">
           {/* top */}
           <div>
-            <form onSubmit={handleSearchSubmit} className="flex px-6  justify-start gap-6 sm:gap-12 bg-[#1f2937] items-center py-5 rounded-xl">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex px-6  justify-start gap-6 sm:gap-12 bg-[#1f2937] items-center py-5 rounded-xl"
+            >
               {currentUser.userType != "student" && (
                 <div>
                   <Label
@@ -178,173 +245,86 @@ export default function ShowAttendance() {
           </div>
           {/* bottom */}
           <div>
-            <Table hoverable className="shadow-md">
-              <Table.Head>
-                <Table.HeadCell>Date</Table.HeadCell>
-                <Table.HeadCell>Subject</Table.HeadCell>
-                <Table.HeadCell>Present</Table.HeadCell>
-                <Table.HeadCell>Absent</Table.HeadCell>
-                <Table.HeadCell>DL</Table.HeadCell>
-                <Table.HeadCell>ML</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date().toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>Chemistry</Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaCheck className="text-green-500" />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <FaTimes />
-                  </Table.Cell>
-                </Table.Row>
-              </Table.Body>
-            </Table>
-            {/* {showMore && (
+            {loading && !error && <p className="text-center p-3">{loading}</p>}
+            {error && !loading && <p className="text-center p-3">{error}</p>}
+            {attendanceData.length === 0 && !loading && !error && (
+              <p className="text-center p-3">No attendance found.</p>
+            )}
+            
+            {!loading && !error && attendanceData.length > 0 && (
+              <Table hoverable className="shadow-md">
+                <Table.Head>
+                  <Table.HeadCell>Date</Table.HeadCell>
+                  <Table.HeadCell>Subject</Table.HeadCell>
+                  <Table.HeadCell>Present</Table.HeadCell>
+                  <Table.HeadCell>Absent</Table.HeadCell>
+                  <Table.HeadCell>DL</Table.HeadCell>
+                  <Table.HeadCell>ML</Table.HeadCell>
+                </Table.Head>
+                <Table.Body className="divide-y">
+                  {attendanceData.slice(0,endIndex).map((data) => {
+                    const title = coursesDetails[data.courseId].title;
+                    const createdAtDate = new Date(data.createdAt);
+                    return (
+                      <Table.Row
+                        key={Math.random()}
+                        className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                      >
+                        <Table.Cell>
+                          {createdAtDate.toLocaleDateString()}
+                        </Table.Cell>
+                        <Table.Cell>{title}</Table.Cell>
+                        {data.attendance === "P" ? (
+                          <Table.Cell>
+                            <FaCheck className="text-green-500" />
+                          </Table.Cell>
+                        ) : (
+                          <Table.Cell>
+                            <FaTimes />
+                          </Table.Cell>
+                        )}
+                        {data.attendance === "AB" ? (
+                          <Table.Cell>
+                            <FaCheck className="text-green-500" />
+                          </Table.Cell>
+                        ) : (
+                          <Table.Cell>
+                            <FaTimes />
+                          </Table.Cell>
+                        )}
+                        {data.attendance === "DL" ? (
+                          <Table.Cell>
+                            <FaCheck className="text-green-500" />
+                          </Table.Cell>
+                        ) : (
+                          <Table.Cell>
+                            <FaTimes />
+                          </Table.Cell>
+                        )}
+                        {data.attendance === "ML" ? (
+                          <Table.Cell>
+                            <FaCheck className="text-green-500" />
+                          </Table.Cell>
+                        ) : (
+                          <Table.Cell>
+                            <FaTimes />
+                          </Table.Cell>
+                        )}
+                      </Table.Row>
+                    );
+                  })}
+                </Table.Body>
+              </Table>
+            )}
+
+            {showMore && !loading && !error && (
               <button
-                onClick={handleShowMore}
-                className="text-teal-500 self-center w-full text-sm py-7"
+                onClick={onShowMoreClick}
+                className="text-teal-500 self-center w-full text-sm py-3"
               >
                 Show more
               </button>
-            )} */}
-            <button className="text-teal-500 self-center w-full text-sm py-3">
-              Show more
-            </button>
+            )}
           </div>
         </div>
         {/* right */}
@@ -363,7 +343,7 @@ export default function ShowAttendance() {
                 <HiAcademicCap className="bg-white text-black rounded-full text-5xl p-2 shadow-lg" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold">30</h1>
+                <h1 className="text-2xl font-semibold">{overAll.total}</h1>
                 <p>Total lectures</p>
               </div>
             </div>
@@ -372,7 +352,7 @@ export default function ShowAttendance() {
                 <HiCheckCircle className="bg-white text-black rounded-full text-5xl p-2 shadow-lg" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold">24</h1>
+                <h1 className="text-2xl font-semibold">{overAll.present}</h1>
                 <p>Attended</p>
               </div>
             </div>
@@ -381,7 +361,7 @@ export default function ShowAttendance() {
                 <HiOutlineEmojiSad className="bg-white text-black rounded-full text-5xl p-2 shadow-lg" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold">6</h1>
+                <h1 className="text-2xl font-semibold">{overAll.absent}</h1>
                 <p>Absent</p>
               </div>
             </div>

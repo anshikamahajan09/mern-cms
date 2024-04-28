@@ -21,17 +21,60 @@ import {
   TimelineTitle,
 } from "flowbite-react";
 import { HiArrowNarrowRight } from "react-icons/hi";
+import { Link } from "react-router-dom";
 import { Banner } from "flowbite-react";
 import { HiArrowRight, HiX } from "react-icons/hi";
 import { MdPercent } from "react-icons/md";
+import { coursesDetails } from "../utils";
 
 function DashboardAdmin() {
-  const [trend, setTrend] = useState({
-    students: "up",
-    teachers: "up",
-    courses: "down",
-    fees: "down",
+  const [announcements, setAnnouncements] = useState([]);
+  const {currentUser} = useSelector((state) => state.user);
+  useEffect(()=>{
+    const fetchAnnoucements = async () => {
+      try{
+        const response = await fetch("/api/general/fetchAnnouncements", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userType: currentUser.userType }),
+        });
+        const data = await response.json();
+        setAnnouncements(data);
+      }
+      catch(err){
+        console.error("Error fetching announcements:", err);
+      }
+    }
+    if(currentUser){
+      fetchAnnoucements();
+    }
+  }, []);
+
+  const [trendData, setTrendData] = useState({
+    students:{
+      trend: "up",
+      newTotal: 0,
+      tillLastMonthStudentCount: 0,
+    },
+    teachers: {
+      trend: "up",
+      newTotal: 0,
+      tillLastMonthFacultyCount: 0,
+    },
+    courses: {
+      trend: "up",
+      newTotal: Object.keys(coursesDetails).length,
+      lastYearTotal: 3,
+    },
+    fees: {
+      trend: "down",
+      newTotal: 48697,
+      lastMonthTotal: 53240,
+    },
   });
+
   const options = {
     chart: {
       height: "85%",
@@ -183,6 +226,34 @@ function DashboardAdmin() {
     }
   }, []);
 
+  useEffect(()=>{
+    const fetchTrendData = async () => {
+      try{
+        const response = await fetch("/api/general/fetchTrendData");
+        const data = await response.json();
+        setTrendData({
+          ...trendData,
+          students: {
+            trend: data.totalStudent > data.tillLastMonthStudentCount ? "up" : "down",
+            newTotal: data.totalStudent,
+            tillLastMonthStudentCount: data.tillLastMonthStudentCount,
+          },
+          teachers: {
+            trend: data.totalFaculty > data.tillLastMonthFacultyCount ? "up" : "down",
+            newTotal: data.totalFaculty,
+            tillLastMonthFacultyCount: data.tillLastMonthFacultyCount,
+          },
+        });
+      }
+      catch(err){
+        console.error("Error fetching trend data:", err);
+      }
+    }
+
+    if(currentUser){
+      fetchTrendData();
+    }
+  },[])
   return (
     <main className="text-white w-full p-6 md:pl-64">
       <h1 className="text-3xl font-bold border-b-1 mb-6 text-center sm:text-left">
@@ -200,19 +271,19 @@ function DashboardAdmin() {
             />
             <div className="flex-col">
               <h5 className=" text-3xl sm:text-xl  tracking-tight text-gray-900 dark:text-white">
-                New Students
+                Total Students
               </h5>
-              <p className="text-6xl sm:text-4xl text-end text-[#4caf50]">95</p>
+              <p className="text-6xl sm:text-4xl text-end text-[#4caf50]">{(trendData.students.newTotal)}</p>
             </div>
           </div>
           <div className="flex gap-2">
-            {trend.students === "up" ? (
+            {trendData.students.trend === "up" ? (
               <FcBullish size={30} />
             ) : (
               <FcBearish size={30} />
             )}
             <p className="font-normal flex items-end text-gray-700 dark:text-gray-400">
-              10% Higher Than Last Month
+              {Math.floor(((trendData.students.newTotal-trendData.students.tillLastMonthStudentCount)/trendData.students.tillLastMonthStudentCount)*100) && 100}% Higher Than Last Month
             </p>
           </div>
         </Card>
@@ -225,21 +296,21 @@ function DashboardAdmin() {
             />
             <div className="flex-col">
               <h5 className="text-3xl sm:text-xl  tracking-tight text-gray-900 dark:text-white">
-                Total Courses
+                Total Departments
               </h5>
               <p className="text-6xl sm:text-4xl text-end text-[#4caf50]">
-                125
+                {trendData.courses.newTotal}
               </p>
             </div>
           </div>
           <div className="flex gap-2">
-            {trend.courses === "up" ? (
+            {trendData.courses.trend === "up" ? (
               <FcBullish size={30} />
             ) : (
               <FcBearish size={30} />
             )}
             <p className="font-normal flex items-end text-gray-700 dark:text-gray-400">
-              7% Less Than Last Month
+            {Math.floor(((trendData.courses.newTotal-trendData.courses.lastYearTotal)/trendData.courses.lastYearTotal)*100) && 100}% Higher Than Last Year
             </p>
           </div>
         </Card>
@@ -254,17 +325,17 @@ function DashboardAdmin() {
               <h5 className="text-3xl sm:text-xl  tracking-tight text-gray-900 dark:text-white">
                 Total Teachers
               </h5>
-              <p className="text-6xl sm:text-4xl text-end text-[#4caf50]">89</p>
+              <p className="text-6xl sm:text-4xl text-end text-[#4caf50]">{trendData.teachers.newTotal}</p>
             </div>
           </div>
           <div className="flex gap-2">
-            {trend.teachers === "up" ? (
+            {trendData.teachers.trend === "up" ? (
               <FcBullish size={30} />
             ) : (
               <FcBearish size={30} />
             )}
             <p className="font-normal flex items-end text-gray-700 dark:text-gray-400">
-              12% Higher Than Last Month
+            {Math.floor(((trendData.teachers.newTotal-trendData.teachers.tillLastMonthFacultyCount)/trendData.teachers.tillLastMonthFacultyCount)*100) && 100}% Higher Than Last Month
             </p>
           </div>
         </Card>
@@ -281,7 +352,7 @@ function DashboardAdmin() {
             </div>
           </div>
           <div className="flex gap-2">
-            {trend.fees === "up" ? (
+            {trendData.fees.trend === "up" ? (
               <FcBullish size={30} />
             ) : (
               <FcBearish size={30} />
@@ -304,13 +375,13 @@ function DashboardAdmin() {
                   <p className="flex items-center text-xs sm:text-sm font-normal text-gray-500 dark:text-white">
                     <span className="[&_p]:inline">
                       Something new ?&nbsp;
-                      <a
-                        href="https://flowbite.com"
+                      <Link
+                        to="/admin?tab=add-notice"
                         className="ml-0 flex items-center text-xs sm:text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500 md:ml-1 md:inline-flex"
                       >
                         Make an annoucement
                         <HiArrowRight className="ml-2" />
-                      </a>
+                      </Link>
                     </span>
                   </p>
                 </div>
@@ -380,51 +451,27 @@ function DashboardAdmin() {
           </div>
 
           <Timeline>
-            <TimelineItem>
+          {announcements.slice(0, 4).map((announcement) => {
+            const createdAt = new Date(announcement.createdAt);
+            const formattedDate = createdAt.toLocaleDateString('en-US', {
+              month: 'short',
+              day: '2-digit',
+              year: 'numeric'
+            });
+            return (
+              <TimelineItem key={announcement._id}>
               <Timeline.Point icon={HiCalendar} />
               <TimelineContent>
-                <TimelineTime>April 2024 - Examination Department</TimelineTime>
+                <TimelineTime>{formattedDate} - {announcement.dept}</TimelineTime>
                 {/* <img src={newPng}/> */}
                 <TimelineTitle>
-                  Revised Date Sheet BE {"(ECE)"} Regular & Reappear for End
-                  Term Examination May 2024
+                  {announcement.title}
                 </TimelineTitle>
-                <TimelineBody></TimelineBody>
-                <Button color="gray">
-                  Learn More
-                  <HiArrowNarrowRight className="ml-2 mt-1.5 h-3 w-3" />
-                </Button>
+                <TimelineBody>{announcement.content}</TimelineBody>
               </TimelineContent>
             </TimelineItem>
-            <TimelineItem>
-              <Timeline.Point icon={HiCalendar} />{" "}
-              <TimelineContent>
-                <TimelineTime>
-                  April 2024 - Office of Student Affairs
-                </TimelineTime>
-                <TimelineTitle>World Dance Day</TimelineTitle>
-                <TimelineBody>
-                  Dear all, we are celebrating World Dance Day on 29th April
-                  2022. All the students are requested to participate in the
-                  event. <br /> Thanks and Regards
-                  <br /> Office of Student Affairs
-                </TimelineBody>
-              </TimelineContent>
-            </TimelineItem>
-            <TimelineItem>
-              <Timeline.Point icon={HiCalendar} />
-              <TimelineContent>
-                <TimelineTime>March 2024 - Examination Department</TimelineTime>
-                <TimelineTitle>
-                  Result Declared BE MBA CSE 3RD SEM, BATCH 2022
-                </TimelineTitle>
-                <TimelineBody>
-                  Students may apply for the re-evaluation till 14.02.2024 only
-                  for Discrete Structure {'"22AS003"'}. No evaluation will be
-                  entitiled after the due date.
-                </TimelineBody>
-              </TimelineContent>
-            </TimelineItem>
+            )
+          })}
           </Timeline>
         </div>
       </div>

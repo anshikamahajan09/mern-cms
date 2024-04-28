@@ -1,4 +1,6 @@
 import announcement from '../models/announcement.model.js';
+import {student} from '../models/student.model.js';
+import facultySchema from '../models/faculty.model.js';
 
 export const makeAnnouncement = async (req, res, next) => {
     try{
@@ -26,14 +28,14 @@ export const fetchAnnouncements = async (req, res, next) => {
             return res.status(400).json({message: "Invalid user type"});
         }
         let announcements;
-        if(userType == 'admin'){
+        if(userType === 'admin'){
             announcements = await announcement.find({access : {
-                $in: ['both', 'admin', 'faculty']
+                $in: ['both', 'students', 'faculty']
             }});
         }
         else if(userType === 'student'){
             announcements = await announcement.find({access: {
-                $in: ['both', 'student']
+                $in: ['both', 'students']
             }});
         }
         else{
@@ -43,6 +45,40 @@ export const fetchAnnouncements = async (req, res, next) => {
         }
         announcements = announcements.sort((a, b) => b.createdAt - a.createdAt);
         res.status(200).json(announcements);
+    }
+    catch(err){
+        next(err);
+    }
+}
+
+
+export const fetchTrendData = async(req, res, next) => {
+    try{
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
+        const currentMonthStartDate = new Date(currentYear, currentMonth - 1, 1);
+
+        const totalStudent = await student.countDocuments();
+        const totalFaculty = await facultySchema.countDocuments();
+
+        const tillLastMonthFacultyCount = await facultySchema.countDocuments({
+            createdAt: {
+                $lt: currentMonthStartDate
+            }
+        });
+        const tillLastMonthStudentCount = await facultySchema.countDocuments({
+            createdAt: {
+                $lt: currentMonthStartDate
+            }
+        });
+        
+
+        res.status(200).json({
+            totalStudent,
+            totalFaculty,
+            tillLastMonthFacultyCount,
+            tillLastMonthStudentCount
+        });
     }
     catch(err){
         next(err);
