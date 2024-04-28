@@ -43,7 +43,7 @@ export default function DashboardStudent() {
           body: JSON.stringify({ rollno: currentUser.rollno }),
         });
         const data = await response.json();
-        setEnrolledCourses(data.courses);
+        setEnrolledCourses(data.courses || []);
       } catch (error) {
         console.error("Error fetching enrolled courses:", error);
       }
@@ -74,7 +74,7 @@ export default function DashboardStudent() {
       fetchAnnoucements();
     }
   }, []);
-
+  console.log(enrolledCourses);
   useEffect(() => {
     const fetchAttendanceData = async () => {
       try {

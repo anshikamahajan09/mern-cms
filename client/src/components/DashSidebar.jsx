@@ -138,9 +138,9 @@ export default function DashSidebar() {
                     Grades
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=add-notice`}>
+                <Link to={`/${currentUser.userType}?tab=notices`}>
                   <Sidebar.Item
-                    active={tab === "add-notice"}
+                    active={tab === "notices"}
                     icon={FaClipboardList}
                     as={"div"}
                   >
@@ -196,9 +196,9 @@ export default function DashSidebar() {
                     Assignments
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=notice-${currentUser.userType}`}>
+                <Link to={`/${currentUser.userType}?tab=notices`}>
                   <Sidebar.Item
-                    active={tab === `notice-${currentUser.userType}`}
+                    active={tab === `notices`}
                     icon={FaClipboardList}
                     as={"div"}
                   >
@@ -263,9 +263,9 @@ export default function DashSidebar() {
                     Assignments
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=see-notice`}>
+                <Link to={`/${currentUser.userType}?tab=notices`}>
                   <Sidebar.Item
-                    active={tab === "see-notice"}
+                    active={tab === "notices"}
                     icon={FaClipboardList}
                     as={"div"}
                   >
