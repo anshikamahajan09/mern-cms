@@ -21,8 +21,6 @@ export const fetchAttendance = async (req, res, next) => {
   let session = req.body.sessionId;
   let courseId = req.body.courseId;
   let month = req.body.month;
-  console.log(req.body);
-
   if (session === undefined && courseId === undefined && month === undefined) {
     try {      
       const attendanceData = await StudentAttendance.aggregate([
@@ -75,11 +73,8 @@ export const fetchAttendance = async (req, res, next) => {
         matchConditions.courseId = courseId;
       }
 
-      
-      const attendanceData = await StudentAttendance.find(matchConditions);
+      const attendanceData = await StudentAttendance.find(matchConditions).sort({ createdAt: -1 });     
       res.json(attendanceData);
-      console.log(attendanceData)
-
     } catch (error) {
       next(error);
     } 
