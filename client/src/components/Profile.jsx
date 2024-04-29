@@ -16,8 +16,8 @@ function Profile() {
 
   return (
     <main className="p-6 w-full min-h-screen md:pl-64">
-      <div className="h-4/5 flex flex-col  gap-8  sm:flex-row rounded-lg">
-        <div className="w-4/6 gap-y-4 p-4 flex flex-col rounded-lg justify-around bg-slate-800 ">
+      <div className="h-4/5 flex flex-col  gap-8  lg:flex-row rounded-lg">
+        <div className="w-full lg:w-7/12 xl:w-4/6 gap-y-4 p-4 flex flex-col rounded-lg justify-around bg-slate-800 ">
           {/* left div content */}
           <h1 className="text-3xl font-semibold">General Information</h1>
           {/* first row input */}
@@ -62,7 +62,7 @@ function Profile() {
               readOnly = {currentUser.userType === 'admin' ? false : true}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               id="email"
-              className="p-2 border w-3/5 rounded-lg text-gray-900 bg-[#F0EBE3] text-md font-semibold"
+              className="p-2 border w-full md:w-3/5 rounded-lg text-gray-900 bg-[#F0EBE3] text-md font-semibold"
               placeholder="Your email"
             />
           </div>
@@ -114,30 +114,30 @@ function Profile() {
           </div>
         </div>
 
-        <div className="w-2/6 bg-slate-800 rounded-lg">
-          <div className="h-2/3 ">
+        <div className="w-full lg:w-5/12 xl:w-2/6 bg-slate-800 rounded-lg">
+          <div className="h-[450px] sm:h-[580px] md:h-[610px] lg:h-2/3 ">
             {/* top div */}
             <div
-              className="bg-slate-700 rounded-t-lg h-2/5 flex justify-center w-full relative
+              className="bg-slate-700 rounded-t-lg h-1/5 sm:h-2/5 flex justify-center w-full relative
             "
             >
               {" "}
               <img
-                className="h-40 w-40 object-cover rounded-full absolute top-1/2"
+                className="h-24 w-24 sm:h-40 sm:w-40 object-cover rounded-full absolute top-1/2"
                 src={formData.avatar}
               />
             </div>
-            <div className={`pt-24 flex flex-col ${currentUser.userType!=='admin' && 'gap-5'} text-center`}>
+            <div className={`pt-14 sm:pt-24 flex flex-col ${currentUser.userType!=='admin' && 'gap-5'} text-center`}>
               <p className="font-semibold text-xl">{currentUser.fName + ' ' + currentUser.lName}</p>
               <p className="text-md font-semibold">
                 {currentUser.userType === 'admin' ? 'Administrator' : currentUser.userType === 'student' ? 'Student' : 'Faculty'}, Campus Flow
               </p>
               <p className="text-md">{currentUser.address}</p>
-              <div className="flex justify-center mt-2 flex-row gap-4">
-                <button className="p-2 px-6 bg-[#fafbfc] rounded-lg text-black font-semibold">
+              <div className="flex justify-center mt-2 flex-row gap-2 xl:gap-4">
+                <button className="p-2 px-4 xl:px-6 bg-[#fafbfc] rounded-lg text-black font-semibold">
                 {currentUser.userType === 'admin' ? 'Global Access' : currentUser.userType === 'student' ? `Roll Number: ${currentUser.rollno}` : 'Faculty Access'} 
                 </button>
-                <button className="p-2 px-6 bg-green-700 rounded-lg text-white font-semibold">
+                <button className="p-2 px-4 xl:px-6 bg-green-700 rounded-lg text-white font-semibold">
                  {currentUser.userType.toUpperCase()}
                 </button>
               </div>

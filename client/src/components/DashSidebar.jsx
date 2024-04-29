@@ -102,7 +102,7 @@ export default function DashSidebar() {
                     Manage Faculty
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=courses`}>
+                {/* <Link to={`/${currentUser.userType}?tab=courses`}>
                   <Sidebar.Item
                     active={tab === "courses"}
                     icon={GiBookshelf}
@@ -119,7 +119,7 @@ export default function DashSidebar() {
                   >
                     Departments
                   </Sidebar.Item>
-                </Link>
+                </Link> */}
                 <Link to={`/${currentUser.userType}?tab=attendence`}>
                   <Sidebar.Item
                     active={tab === "attendence"}
@@ -147,7 +147,7 @@ export default function DashSidebar() {
                     Notices
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=see-complaints`}>
+                {/* <Link to={`/${currentUser.userType}?tab=see-complaints`}>
                   <Sidebar.Item
                     active={tab === "see-complaints"}
                     icon={GiNotebook}
@@ -155,7 +155,7 @@ export default function DashSidebar() {
                   >
                     Complaints
                   </Sidebar.Item>
-                </Link>
+                </Link> */}
               </>
             )}
             {currentUser.isFaculty && (
@@ -205,7 +205,7 @@ export default function DashSidebar() {
                     Notices
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=complaints`}>
+                {/* <Link to={`/${currentUser.userType}?tab=complaints`}>
                   <Sidebar.Item
                     active={tab === "complaints"}
                     icon={GiNotebook}
@@ -213,7 +213,7 @@ export default function DashSidebar() {
                   >
                     Complaints
                   </Sidebar.Item>
-                </Link>
+                </Link> */}
               </>
             )}
             {currentUser.isStudent && (

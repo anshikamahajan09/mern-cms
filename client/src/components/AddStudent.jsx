@@ -26,7 +26,7 @@ export default function AddStudent() {
     profilePicture:
       "https://www.rainbowschoolnellore.com/images/student-profile-1.jpg",
   });
-  console.log(studentData);
+  const [loading, setLoading] = useState(false);
   const handleDataChange = (e) => {
     const { id, value, type } = e.target;
     if (type === "radio") {
@@ -66,6 +66,7 @@ export default function AddStudent() {
 
   const handleStudentSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch("/api/admin/add-student", {
         method: "POST",
@@ -77,11 +78,14 @@ export default function AddStudent() {
       const data = await res.json();
       if (data.success === false) {
         console.log("Error adding student:", data.message);
+        setLoading(false);
         return;
       } 
       console.log("Student added successfully");
+      setLoading(false);
     } catch (error) {
       console.log("Error adding student right now:", error);
+      setLoading(false);
     }
   };
 
