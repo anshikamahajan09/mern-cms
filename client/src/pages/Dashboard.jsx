@@ -9,6 +9,7 @@ import ShowAttendance from "../components/ShowAttendance";
 import DashboardFaculty from "../components/DashboardFaculty";
 import Notice from "../components/Notices";
 import Students from "../components/Students";
+import AddStudent from "../components/AddStudent";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -35,6 +36,7 @@ export default function Dashboard() {
       {tab === 'show-attendance' && <ShowAttendance />}
       {tab === 'notices' && <Notice />}
       {tab === 'students' && <Students />}
+      {tab === 'add-student' && <AddStudent />}
     </div>
   );
 }

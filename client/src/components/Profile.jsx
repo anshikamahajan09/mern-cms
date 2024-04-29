@@ -4,7 +4,6 @@ import {useSelector} from 'react-redux'
 
 function Profile() {
     const {currentUser} = useSelector(state => state.user);
-    console.log(currentUser);
     const [formData, setFormData] = useState({
         fName: currentUser?.fName,
         lName: currentUser?.lName,
@@ -142,7 +141,7 @@ function Profile() {
                  {currentUser.userType.toUpperCase()}
                 </button>
               </div>
-              <p className="p-10 pt-5 text-gray-300 text-sm italic">Contact admin for profile updates. Reach out for assistance or questions!!</p>
+            {currentUser.userType !== 'admin' && (              <p className="p-10 pt-5 text-gray-300 text-sm italic">Contact admin for profile updates. Reach out for assistance or questions!!</p>)}
             </div>
           </div>
           {currentUser.userType === 'admin' && (

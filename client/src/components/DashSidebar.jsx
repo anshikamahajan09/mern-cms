@@ -86,7 +86,7 @@ export default function DashSidebar() {
               <>
                 <Link to={`/${currentUser.userType}?tab=students`}>
                   <Sidebar.Item
-                    active={tab === "students"}
+                    active={tab === "students" || tab === 'add-student'}
                     icon={HiUserGroup}
                     as={"div"}
                   >
@@ -218,7 +218,7 @@ export default function DashSidebar() {
             )}
             {currentUser.isStudent && (
               <>
-                <Link to={`/${currentUser.userType}?tab=courses`}>
+                {/* <Link to={`/${currentUser.userType}?tab=courses`}>
                   <Sidebar.Item
                     active={tab === "courses"}
                     icon={HiBadgeCheck}
@@ -226,7 +226,7 @@ export default function DashSidebar() {
                   >
                     Courses enrolled
                   </Sidebar.Item>
-                </Link>
+                </Link> */}
                 <Link to={`/${currentUser.userType}?tab=show-attendance`}>
                   <Sidebar.Item
                     active={tab === "show-attendance"}
@@ -272,7 +272,7 @@ export default function DashSidebar() {
                     Notices
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=add-complaints`}>
+                {/* <Link to={`/${currentUser.userType}?tab=add-complaints`}>
                   <Sidebar.Item
                     active={tab === "add-complaints"}
                     icon={GiNotebook}
@@ -289,7 +289,7 @@ export default function DashSidebar() {
                   >
                     Remarks
                   </Sidebar.Item>
-                </Link>
+                </Link> */}
               </>
             )}
           </Sidebar.ItemGroup>

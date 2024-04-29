@@ -30,52 +30,67 @@ import { coursesDetails } from "../utils";
 function DashboardAdmin() {
   const [announcements, setAnnouncements] = useState([]);
   const {currentUser} = useSelector((state) => state.user);
-  useEffect(()=>{
-    const fetchAnnoucements = async () => {
-      try{
-        const response = await fetch("/api/general/fetchAnnouncements", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userType: currentUser.userType }),
-        });
-        const data = await response.json();
-        setAnnouncements(data);
-      }
-      catch(err){
-        console.error("Error fetching announcements:", err);
-      }
-    }
-    if(currentUser){
-      fetchAnnoucements();
-    }
-  }, []);
 
-  const [trendData, setTrendData] = useState({
-    students:{
-      trend: "up",
-      newTotal: 0,
-      tillLastMonthStudentCount: 0,
+  
+  const pieChartColors = ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694", "#FFD76D","#FF9F43", "#FF6B6B", "#48BB78", "#4FD1C5", "#4F46E5", "#A3A3A3", "#FFD76D", "#FF9F43", "#FF6B6B", "#48BB78", "#4FD1C5", "#4F46E5", "#A3A3A3"];
+  const [pieChartData, setPieChartData] = useState({
+    series: [40.0, 35.0, 10.0, 15.0], // to update [CSE, BBA, MARINE, PHARMACY]
+    colors:pieChartColors.slice(0,Object.keys(coursesDetails).length),
+    chart: {
+      height: "420",
+      width: "100%",
+      type: "pie",
     },
-    teachers: {
-      trend: "up",
-      newTotal: 0,
-      tillLastMonthFacultyCount: 0,
+    stroke: {
+      colors: ["#ffffff"],
+      lineCap: "",
     },
-    courses: {
-      trend: "up",
-      newTotal: Object.keys(coursesDetails).length,
-      lastYearTotal: 3,
+    plotOptions: {
+      pie: {
+        labels: {
+          show: true,
+        },
+        size: "100%",
+        dataLabels: {
+          offset: -25,
+        },
+      },
     },
-    fees: {
-      trend: "down",
-      newTotal: 48697,
-      lastMonthTotal: 53240,
+    labels: Object.keys(coursesDetails),
+    dataLabels: {
+      enabled: true,
+      style: {
+        fontFamily: "Inter, sans-serif",
+      },
+    },
+    legend: {
+      position: "bottom",
+      fontFamily: "Inter, sans-serif",
+    },
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          return value + "%";
+        },
+      },
+    },
+    xaxis: {
+      labels: {
+        formatter: function (value) {
+          return value + "%";
+        },
+      },
+      axisTicks: {
+        show: false,
+      },
+      axisBorder: {
+        show: false,
+      },
     },
   });
 
-  const options = {
+
+  const [lineChartData, setLineChartData] = useState({
     chart: {
       height: "85%",
       maxWidth: "100%",
@@ -126,12 +141,12 @@ function DashboardAdmin() {
     series: [
       {
         name: "Admissions",
-        data: [2345, 2112, 3024, 2980, 2389, 2473],
+        data: [0, 0, 0, 0, 0, 6], // to update
         color: "#1A56DB",
       },
     ],
     xaxis: {
-      categories: ["2019", "2020", "2021", "2022", "2023", "2024"],
+      categories: ["2019", "2020", "2021", "2022", "2023", "2024"], // to update
       labels: {
         show: true,
       },
@@ -144,64 +159,54 @@ function DashboardAdmin() {
     },
     yaxis: {
       show: true,
-    },
-  };
+    }});
 
-  const options2 = {
-    series: [40.0, 35.0, 10.0, 15.0],
-    colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
-    chart: {
-      height: "420",
-      width: "100%",
-      type: "pie",
+  useEffect(()=>{
+    const fetchAnnoucements = async () => {
+      try{
+        const response = await fetch("/api/general/fetchAnnouncements", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userType: currentUser.userType }),
+        });
+        const data = await response.json();
+        setAnnouncements(data);
+      }
+      catch(err){
+        console.error("Error fetching announcements:", err);
+      }
+    }
+    if(currentUser){
+      fetchAnnoucements();
+    }
+  }, []);
+
+  const [trendData, setTrendData] = useState({
+    students:{
+      trend: "up",
+      newTotal: 0,
+      tillLastMonthStudentCount: 0,
     },
-    stroke: {
-      colors: ["#ffffff"],
-      lineCap: "",
+    teachers: {
+      trend: "up",
+      newTotal: 0,
+      tillLastMonthFacultyCount: 0,
     },
-    plotOptions: {
-      pie: {
-        labels: {
-          show: true,
-        },
-        size: "100%",
-        dataLabels: {
-          offset: -25,
-        },
-      },
+    courses: {
+      trend: "up",
+      newTotal: Object.keys(coursesDetails).length,
+      lastYearTotal: 3,
     },
-    labels: ["CSE", "Bussiness Administration", "Marine", "Pharmacy"],
-    dataLabels: {
-      enabled: true,
-      style: {
-        fontFamily: "Inter, sans-serif",
-      },
+    fees: {
+      trend: "down",
+      newTotal: 48697,
+      lastMonthTotal: 53240,
     },
-    legend: {
-      position: "bottom",
-      fontFamily: "Inter, sans-serif",
-    },
-    yaxis: {
-      labels: {
-        formatter: function (value) {
-          return value + "%";
-        },
-      },
-    },
-    xaxis: {
-      labels: {
-        formatter: function (value) {
-          return value + "%";
-        },
-      },
-      axisTicks: {
-        show: false,
-      },
-      axisBorder: {
-        show: false,
-      },
-    },
-  };
+  });
+
+
 
   useEffect(() => {
     if (
@@ -210,7 +215,7 @@ function DashboardAdmin() {
     ) {
       const chart = new ApexCharts(
         document.getElementById("area-chart"),
-        options
+        lineChartData
       );
       chart.render();
     }
@@ -220,7 +225,7 @@ function DashboardAdmin() {
     ) {
       const chart = new ApexCharts(
         document.getElementById("pie-chart"),
-        options2
+        pieChartData
       );
       chart.render();
     }
@@ -261,16 +266,16 @@ function DashboardAdmin() {
       </h1>
 
       {/* top cards */}
-      <div className="flex flex-col sm:flex-row justify-between gap-y-8 mb-6">
+      <div className="flex flex-col sm:flex-row justify-between gap-y-8 gap-2 mb-6">
         <Card href="#" className="max-w-xl cursor-default">
-          <div className="flex  justify-between sm:gap-14 ">
+          <div className="flex justify-between">
             <img
               src={student}
               className="w-24  object-cover"
               alt="student-logo"
             />
             <div className="flex-col">
-              <h5 className=" text-3xl sm:text-xl  tracking-tight text-gray-900 dark:text-white">
+              <h5 className=" text-3xl sm:text-xl text-gray-900 dark:text-white">
                 Total Students
               </h5>
               <p className="text-6xl sm:text-4xl text-end text-[#4caf50]">{(trendData.students.newTotal)}</p>
@@ -288,7 +293,7 @@ function DashboardAdmin() {
           </div>
         </Card>
         <Card href="#" className="max-w-xl cursor-default">
-          <div className="flex  justify-between sm:gap-14 ">
+          <div className="flex  justify-between">
             <img
               src={onlineLearning}
               className="w-24  object-cover"
@@ -376,7 +381,7 @@ function DashboardAdmin() {
                     <span className="[&_p]:inline">
                       Something new ?&nbsp;
                       <Link
-                        to="/admin?tab=add-notice"
+                        to="/admin?tab=notices"
                         className="ml-0 flex items-center text-xs sm:text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500 md:ml-1 md:inline-flex"
                       >
                         Make an annoucement
@@ -390,7 +395,7 @@ function DashboardAdmin() {
           </div>
           <div className="justify-between flex h-1/2 sm:h-3/4 gap-4  rounded-lg">
             {/* first chart */}
-            <div className="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+            <div className="w-full max-h-[600px] bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
               <div className="flex justify-between">
                 <div>
                   <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">
@@ -422,7 +427,7 @@ function DashboardAdmin() {
               <div id="area-chart"></div>
             </div>
             {/*  second chart */}
-            <div className="w-full rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+            <div className="w-full rounded-lg max-h-[600px] shadow dark:bg-gray-800 p-4 md:p-6">
               <div className="flex justify-between items-start w-full">
                 {/* Website traffic */}
                 <div className="flex-col items-center">
@@ -451,7 +456,7 @@ function DashboardAdmin() {
           </div>
 
           <Timeline>
-          {announcements.slice(0, 4).map((announcement) => {
+          {announcements.slice(0, 3).map((announcement) => {
             const createdAt = new Date(announcement.createdAt);
             const formattedDate = createdAt.toLocaleDateString('en-US', {
               month: 'short',

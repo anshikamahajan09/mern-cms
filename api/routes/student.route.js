@@ -1,10 +1,11 @@
 import express from 'express';
-import { fetchEnrolledCourses  } from '../controllers/student.controller.js';
+import { fetchAcademicInfo  } from '../controllers/student.controller.js';
+
 
 
 const router = express.Router();
 
-router.post('/fetchEnrolledCourses', fetchEnrolledCourses);
+router.post('/fetchAcademicInfo', fetchAcademicInfo);
 
 export default router;
 

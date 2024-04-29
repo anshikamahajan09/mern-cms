@@ -31,11 +31,11 @@ export default function DashboardStudent() {
   const { currentUser } = useSelector((state) => state.user);
   const [attendanceData, setAttendanceData] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [academicInfo, setAcademicInfo] = useState({});
   useEffect(() => {
-    const fetchEnrolledCourses = async () => {
+    const fetchAcademicInfo = async () => {
       try {
-        const response = await fetch("/api/student/fetchEnrolledCourses", {
+        const response = await fetch("/api/student/fetchAcademicInfo", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -43,19 +43,20 @@ export default function DashboardStudent() {
           body: JSON.stringify({ rollno: currentUser.rollno }),
         });
         const data = await response.json();
-        setEnrolledCourses(data.courses || []);
+        setAcademicInfo(data);
       } catch (error) {
-        console.error("Error fetching enrolled courses:", error);
+        console.error("Error fetching academic info right now.", error);
       }
     };
     if (currentUser.rollno) {
-      fetchEnrolledCourses();
+      fetchAcademicInfo();
     }
-  }, [currentUser.rollno]);
+  }, []);
+  console.log(academicInfo);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchAnnoucements = async () => {
-      try{
+      try {
         const response = await fetch("/api/general/fetchAnnouncements", {
           method: "POST",
           headers: {
@@ -65,16 +66,15 @@ export default function DashboardStudent() {
         });
         const data = await response.json();
         setAnnouncements(data);
-      }
-      catch(err){
+      } catch (err) {
         console.error("Error fetching announcements:", err);
       }
-    }
-    if(currentUser.rollno){
+    };
+    if (currentUser.rollno) {
       fetchAnnoucements();
     }
   }, []);
-  console.log(enrolledCourses);
+  
   useEffect(() => {
     const fetchAttendanceData = async () => {
       try {
@@ -103,22 +103,25 @@ export default function DashboardStudent() {
         <div>
           <h1 className="font-bold text-3xl ">Attendance</h1>
           <div className="flex flex-wrap w-full justify-between sm:justify-start  gap-2 sm:gap-8 lg:gap-4 py-5">
-            {enrolledCourses.map((enrolledCourseId) => {
-              const data = attendanceData.find(
-                (data) => data.courseId === enrolledCourseId
-              );
-              
+            {academicInfo &&
+              academicInfo.courses && academicInfo.courses.map((enrolledCourseId) => {
+                const data = attendanceData.find(
+                  (data) => data.courseId === enrolledCourseId
+                );
+                const title =
+                  coursesDetails[academicInfo.department][enrolledCourseId]
+                    .title;
                 const attendancePercentage =
                   data?.totalAttendance !== 0 &&
                   !isNaN(data?.PCount / data?.totalAttendance)
-                    ? (data?.PCount / data?.totalAttendance) * 100
+                    ? Math.floor((data?.PCount / data?.totalAttendance) * 100)
                     : 0;
                 return (
                   <Card
                     key={enrolledCourseId}
                     className="w-1/4 lg:max-w-[190px] lg:min-w-[200px] md:max-w-[220px] rounded-3xl flex flex-col gap-2 shadow-2xl border-0 md:min-w-[200px] min-w-[170px] max-w-[210px]"
                   >
-                    {enrolledCourseId === "CS100" ? (
+                    {enrolledCourseId === "OOP100" ? (
                       <MdComputer className="bg-lime-600 text-white rounded-full text-5xl p-3 shadow-lg" />
                     ) : enrolledCourseId === "AIML100" ? (
                       <GiArtificialHive className="bg-teal-600 text-white rounded-full text-5xl p-3 shadow-lg" />
@@ -127,9 +130,7 @@ export default function DashboardStudent() {
                     ) : (
                       <AiFillDatabase className="bg-red-500 text-white rounded-full text-5xl p-3 shadow-lg" />
                     )}
-                    <h1 className="text-lg font-bold">
-                      {coursesDetails[enrolledCourseId].title}
-                    </h1>
+                    <h1 className="text-lg font-bold">{title}</h1>
                     <h1 className="text-2xl font-bold">
                       {data?.PCount || 0}/{data?.totalAttendance || 0}
                     </h1>
@@ -140,8 +141,7 @@ export default function DashboardStudent() {
                     />
                   </Card>
                 );
-              
-            })}
+              })}
           </div>
         </div>
         {/* bottom */}
@@ -157,17 +157,22 @@ export default function DashboardStudent() {
                 <TableHeadCell>Type</TableHeadCell>
               </TableHead>
               <TableBody className="divide-y">
-                {enrolledCourses.map((enrolledCourseId) => { 
+                {academicInfo.courses && academicInfo.courses.map((enrolledCourseId) => {
                   return (
-                    <TableRow key={enrolledCourseId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {coursesDetails[enrolledCourseId].time}
-                  </TableCell>
-                  <TableCell>{coursesDetails[enrolledCourseId].lh}</TableCell>
-                  <TableCell>{enrolledCourseId}</TableCell>
-                  <TableCell>Lecture</TableCell>
-                </TableRow>
-                  )
+                    <TableRow
+                      key={enrolledCourseId}
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                    >
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {coursesDetails[academicInfo.department][enrolledCourseId].time}
+                      </TableCell>
+                      <TableCell>
+                      {coursesDetails[academicInfo.department][enrolledCourseId].lh}
+                      </TableCell>
+                      <TableCell>{enrolledCourseId}</TableCell>
+                      <TableCell>Lecture</TableCell>
+                    </TableRow>
+                  );
                 })}
               </TableBody>
             </Table>
@@ -180,27 +185,26 @@ export default function DashboardStudent() {
         <div>
           <h1 className=" font-bold text-3xl truncate">Announcements</h1>
           <Timeline className="mt-5">
-          {announcements.slice(0, 4).map((announcement) => {
-            const createdAt = new Date(announcement.createdAt);
-            const formattedDate = createdAt.toLocaleDateString('en-US', {
-              month: 'short',
-              day: '2-digit',
-              year: 'numeric'
-            });
-            return (
-              <TimelineItem key={announcement._id}>
-              <Timeline.Point icon={HiCalendar} />
-              <TimelineContent>
-                <TimelineTime>{formattedDate} - {announcement.dept}</TimelineTime>
-                {/* <img src={newPng}/> */}
-                <TimelineTitle>
-                  {announcement.title}
-                </TimelineTitle>
-                <TimelineBody>{announcement.content}</TimelineBody>
-              </TimelineContent>
-            </TimelineItem>
-            )
-          })}
+            {announcements.slice(0, 4).map((announcement) => {
+              const createdAt = new Date(announcement.createdAt);
+              const formattedDate = createdAt.toLocaleDateString("en-US", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              });
+              return (
+                <TimelineItem key={announcement._id}>
+                  <Timeline.Point icon={HiCalendar} />
+                  <TimelineContent>
+                    <TimelineTime>
+                      {formattedDate} - {announcement.dept}
+                    </TimelineTime>
+                    <TimelineTitle>{announcement.title}</TimelineTitle>
+                    <TimelineBody>{announcement.content}</TimelineBody>
+                  </TimelineContent>
+                </TimelineItem>
+              );
+            })}
           </Timeline>
         </div>
       </div>

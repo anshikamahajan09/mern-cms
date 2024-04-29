@@ -9,11 +9,19 @@ import {
 import { GiNotebook } from "react-icons/gi";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import {annoucementDept} from '../utils'
 
 export default function Notice() {
   const { currentUser } = useSelector((state) => state.user);
-  const [recentAnnouncements, setRecentAnnouncements] = useState([]);
-  console.log(recentAnnouncements);
+  const [announcements, setAnnouncements] = useState([]);
+  const [newNoticeData, setNewNoticeData] = useState({
+    dept: "Computer Science Engineering",
+    title: "",
+    content: "",
+    access: "both",
+    documentLink: "",
+    userType: "admin",
+  });
   useEffect(() => {
     const fetchAnnoucements = async () => {
       try {
@@ -25,7 +33,7 @@ export default function Notice() {
           body: JSON.stringify({ userType: currentUser.userType }),
         });
         const data = await response.json();
-        setRecentAnnouncements(data);
+        setAnnouncements(data);
       } catch (err) {
         console.error("Error fetching announcements:", err);
       }
@@ -34,6 +42,39 @@ export default function Notice() {
       fetchAnnoucements();
     }
   }, []);
+
+  const handleFormChange = (e) => {
+    setNewNoticeData({ ...newNoticeData, [e.target.id]: e.target.value });
+  };
+  const createAnnouncement = async(e) => {
+    e.preventDefault()
+    try{
+      const res = await fetch('/api/general/makeAnnouncement',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newNoticeData)
+      })
+      const data = await res.json()
+      if(data.success === false){
+        console.log('Error creating announcement:', data.message)
+        return;
+      }
+      setAnnouncements([data.announcement, ...announcements, ])
+      setNewNoticeData({
+          dept: "Computer Science Engineering",
+          title: "",
+          content: "",
+          access: "both",
+          documentLink: "",
+          userType: "admin",
+      })
+    }
+    catch(err){
+      console.log('Error creating announcement:', err)
+    }
+  }
   return (
     <div className=" md:pl-64 p-7 w-full flex flex-col gap-16">
       {currentUser.userType === "admin" && (
@@ -44,45 +85,51 @@ export default function Notice() {
               <GiNotebook className="text-gray-400" />
             </span>
           </div>
-          <form className="w-full mt-5 ">
+          <form onSubmit={createAnnouncement} className="w-full mt-5 ">
             <div className="w-full flex flex-wrap gap-x-4 gap-y-4">
               <div className="w-[200px]">
                 <Label value="Department" />
-                <Select>
-                  <option value="CSE">CSE</option>
-                  <option value="ECE">ECE</option>
-                  <option value="EEE">EEE</option>
-                  <option value="MECH">MECH</option>
-                  <option value="CIVIL">CIVIL</option>
+                <Select onChange={handleFormChange} id="dept" value={newNoticeData.dept}>
+                  {annoucementDept.map((dept, index) => (
+                    <option key={index} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
                 </Select>
               </div>
               <div className="w-[200px]">
                 <Label value="Notice Title" />
-                <TextInput placeholder="Notice Title" />
+                <TextInput id="title"  onChange={handleFormChange} value={newNoticeData.title} required minLength={40} maxLength={100} placeholder="Notice Title" />
               </div>
               <div className="w-[200px]">
                 <Label value="Access to:" />
-                <Select>
+                <Select value={newNoticeData.access}  onChange={handleFormChange} required id="access">
+                <option value="both">Both</option>
                   <option value="faculty">Faculty</option>
-                  <option value="student">Student</option>
-                  <option value="both">Both</option>
+                  <option value="students">Student</option>
                 </Select>
               </div>
             </div>
             <div className="flex gap-4 items-center">
-              <FileInput className="mt-6 w-[460px]" />
-              <Button className="mt-5 " gradientDuoTone="purpleToBlue" outline>
+              <FileInput value={newNoticeData.documentLink}  onChange={handleFormChange} className="mt-6 w-[460px]" />
+              <Button className="mt-5 " 
+              id={newNoticeData.documentLink ? 'documentLink' : ''}
+              gradientDuoTone="purpleToBlue" outline>
                 Upload Document
               </Button>
             </div>
-            <div className="w-3/4 mt-5">
+            <div className=" w-full sm:w-3/4 mt-5">
               <Label value="Notice Description" />
-              <Textarea
+              <Textarea value={newNoticeData.content}  onChange={handleFormChange}
+              required
+              id="content"
+              minLength={100}
                 placeholder="Write your announcement here..."
                 rows={6}
-                maxLength={200}
+                maxLength={400}
+                className='resize-none'
               />
-              <Button className="mt-5" gradientDuoTone="greenToBlue">
+              <Button type="submit" className="mt-5" gradientDuoTone="greenToBlue">
                 Post Notice
               </Button>
             </div>
@@ -90,33 +137,9 @@ export default function Notice() {
         </div>
       )}
       <div className="flex w-full flex-col gap-12">
-        {/* <div className="w-3/4 ">
-          <h1 className="font-semibold text-3xl mb-8">Your recent notices</h1>
-          {recentAnnouncements.map(
-            (announcement, index) =>
-              announcement.userId === currentUser._id && (
-                <div key={index} className="w-full flex flex-col p-4  gap-4 mt-4 border border-gray-600 rounded-lg ">
-                  <div className="flex items-center gap-4">
-                    <div className=" text-lg font-semibold">{announcement.title}</div>
-                    <div className="text-gray-400 text-xs italic">
-                      {new Date(announcement.createdAt).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "short",
-                          day: "2-digit",
-                          year: "numeric",
-                        }
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-gray-500 ">{announcement.content}</div>
-                </div>
-              )
-          )}
-        </div> */}
-        <div className="w-3/4">
+        <div className=" w-full sm:w-3/4">
           <h1 className="font-semibold text-3xl mb-8 ">All notices</h1>
-          {recentAnnouncements.map((announcement, index) => (
+          {announcements.map((announcement, index) => (
             <div
               key={index}
               className="w-full flex flex-col gap-4 mt-4 border border-gray-600 rounded-lg p-4 "

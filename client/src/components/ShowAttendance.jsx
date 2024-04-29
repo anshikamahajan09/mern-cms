@@ -28,6 +28,29 @@ export default function ShowAttendance() {
     month: new Date().toLocaleString("default", { month: "short" }),
   });
 
+  const [academicInfo, setAcademicInfo] = useState({});
+  console.log(academicInfo);
+  useEffect(() => {
+    const fetchAcademicInfo = async () => {
+      try {
+        const response = await fetch("/api/student/fetchAcademicInfo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ rollno: currentUser.rollno }),
+        });
+        const data = await response.json();
+        setAcademicInfo(data);
+      } catch (error) {
+        console.error("Error fetching enrolled courses:", error);
+      }
+    };
+    if (currentUser.rollno) {
+      fetchAcademicInfo();
+    }
+  }, [currentUser.rollno]);
+
   useEffect(()=>{
     
       let total = attendanceData.length
@@ -36,8 +59,6 @@ export default function ShowAttendance() {
       setOveraAll({total,present,absent});
     
   }, [attendanceData]);
-  console.log(overAll);
-
   const handleChange = (e) => {
     setError(false);
     setSearchQuery({ ...searchQuery, [e.target.id]: e.target.value });
@@ -119,27 +140,7 @@ export default function ShowAttendance() {
     }
   };
 
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
-  useEffect(() => {
-    const fetchEnrolledCourses = async () => {
-      try {
-        const response = await fetch("/api/student/fetchEnrolledCourses", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ rollno: currentUser.rollno }),
-        });
-        const data = await response.json();
-        setEnrolledCourses(data.courses);
-      } catch (error) {
-        console.error("Error fetching enrolled courses:", error);
-      }
-    };
-    if (currentUser.rollno) {
-      fetchEnrolledCourses();
-    }
-  }, [currentUser.rollno]);
+  
 
   const onShowMoreClick = () => {
     setEndIndex(endIndex + 4);
@@ -201,9 +202,9 @@ export default function ShowAttendance() {
                   <option value="all" key="all">
                     All
                   </option>
-                  {enrolledCourses.map((course) => (
+                  {academicInfo.courses && academicInfo.courses.map((course) => (
                     <option value={course} key={course}>
-                      {coursesDetails[course].title}
+                      {coursesDetails[academicInfo.department][course].title}
                     </option>
                   ))}
                 </Select>
@@ -263,7 +264,7 @@ export default function ShowAttendance() {
                 </Table.Head>
                 <Table.Body className="divide-y">
                   {attendanceData.slice(0,endIndex).map((data) => {
-                    const title = coursesDetails[data.courseId].title;
+                    const title = coursesDetails[academicInfo.department][data.courseId].title;
                     const createdAtDate = new Date(data.createdAt);
                     return (
                       <Table.Row

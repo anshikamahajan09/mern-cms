@@ -14,9 +14,12 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/sign-up" element={<SignIn />} />
-        <Route path="/" element={<Navigate to={`/${currentUser.userType}`} />} /> 
+
+        {currentUser?.userType && (
+          <Route path="/" element={<Navigate to={`/${currentUser.userType}`} />} /> 
+        )}
         <Route element={<PrivateRoute />}>
-          <Route path={`/${currentUser.userType}`} element={<Dashboard />} />
+          <Route path={`/${currentUser?.userType}`} element={<Dashboard />} />
         </Route>
         <Route path="*" element={<Navigate to="/sign-up" />} />
       </Routes>

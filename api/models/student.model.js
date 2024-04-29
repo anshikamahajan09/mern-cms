@@ -73,7 +73,7 @@ const studentAcademicSchema = new mongoose.Schema(
     },
     semester: {
       type: Number,
-      required: true,
+      default : 1
     },
     courses: {
       type: [String],

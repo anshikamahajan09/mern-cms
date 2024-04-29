@@ -2,7 +2,7 @@ import {StudentAcademic} from '../models/student.model.js';
 import { errorHandler } from '../utils/error.js';
 
 
-export const fetchEnrolledCourses = async (req, res, next) => {
+export const fetchAcademicInfo = async (req, res, next) => {
     try
     {
         const { rollno } = req.body;
@@ -11,10 +11,7 @@ export const fetchEnrolledCourses = async (req, res, next) => {
         {
             errorHandler('Student not found', 404);
         }
-        res.status(200).json({
-            success: true,
-            courses: student.courses
-        });
+        res.status(200).json(student);
     }
     catch(err){
         next(err);

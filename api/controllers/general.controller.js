@@ -3,6 +3,10 @@ import {student} from '../models/student.model.js';
 import facultySchema from '../models/faculty.model.js';
 
 export const makeAnnouncement = async (req, res, next) => {
+    console.log(req.body);
+    if(req.body.userType != 'admin'){
+        return res.status(400).json({message: "Only admin can make announcements"});
+    }
     try{
         const {dept, title, content, access, documentLink, userType} = req.body;
         const newAnnouncement = new announcement({
