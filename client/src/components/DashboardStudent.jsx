@@ -101,7 +101,7 @@ export default function DashboardStudent() {
         {/* top */}
         <div>
           <h1 className="font-bold text-3xl ">Attendance</h1>
-          <div className="flex flex-wrap w-full justify-between sm:justify-start  gap-2 sm:gap-8 lg:gap-4 py-5">
+          <div className="flex flex-wrap w-full justify-start gap-2 sm:gap-8 lg:gap-4 py-5">
             {academicInfo &&
               academicInfo.courses && academicInfo.courses.map((enrolledCourseId) => {
                 const data = attendanceData.find(
@@ -118,7 +118,7 @@ export default function DashboardStudent() {
                 return (
                   <Card
                     key={enrolledCourseId}
-                    className="w-1/4 lg:max-w-[190px] lg:min-w-[200px] md:max-w-[220px] rounded-3xl flex flex-col gap-2 shadow-2xl border-0 md:min-w-[200px] min-w-[170px] max-w-[210px]"
+                    className="w-1/4 lg:max-w-[190px] lg:min-w-[200px] md:max-w-[220px] rounded-3xl flex flex-col gap-2 shadow-2xl border-0 md:min-w-[200px] min-w-[180px] max-w-[210px]"
                   >
                     {enrolledCourseId === "OOP100" ? (
                       <MdComputer className="bg-lime-600 text-white rounded-full text-5xl p-3 shadow-lg" />
