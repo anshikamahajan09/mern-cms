@@ -15,12 +15,16 @@ export default function ShowAttendance() {
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [endIndex, setEndIndex] = useState(8);
+
   const [overAll , setOveraAll] = useState({
     total: 0,
     present: 0,
     absent: 0,
   })
+
   const [error, setError] = useState(null);
+  const [academicInfo, setAcademicInfo] = useState({});
+
   const [searchQuery, setSearchQuery] = useState({
     rollno: currentUser.rollno,
     sessionId: new Date().getFullYear(),
@@ -28,8 +32,6 @@ export default function ShowAttendance() {
     month: new Date().toLocaleString("default", { month: "short" }),
   });
 
-  const [academicInfo, setAcademicInfo] = useState({});
-  console.log(academicInfo);
   useEffect(() => {
     const fetchAcademicInfo = async () => {
       try {
@@ -46,62 +48,70 @@ export default function ShowAttendance() {
         console.error("Error fetching enrolled courses:", error);
       }
     };
+  
+    
     if (currentUser.rollno) {
       fetchAcademicInfo();
     }
   }, [currentUser.rollno]);
-
-  useEffect(()=>{
-    
-      let total = attendanceData.length
-      let present = attendanceData.filter(data=>data.attendance === "P").length
-      let absent =  attendanceData.filter(data=>data.attendance === "AB").length
-      setOveraAll({total,present,absent});
-    
+  
+  
+  useEffect(() => {
+    if (academicInfo?.courses && academicInfo.courses.length > 0) {
+      const fetchAttendance = async () => {
+        setLoading("Wait, while we fetch your attendance data.");
+        setError(null);
+        setShowMore(false);
+  
+        try {
+          const response = await fetch("/api/faculty/fetchAttendance", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(searchQuery),
+          });
+          const data = await response.json();
+          setLoading(false);
+          if (data.success === false) {
+            setError("Error fetching attendance data. Try again after some time.");
+            return;
+          }
+          setAttendanceData(data);
+          if (data.length > 8) {
+            setShowMore(true);
+          } else {
+            setShowMore(false);
+          }
+          setError(null);
+        } catch (err) {
+          console.error(err);
+          setLoading(null);
+          setError("Error fetching attendance data. Try again after some time.");
+        }
+      };
+      fetchAttendance();
+    }
+  }, [academicInfo?.courses, searchQuery]);
+  
+  
+  useEffect(() => {
+    if (attendanceData.length > 0) {
+      let total = attendanceData.length;
+      let present = attendanceData.filter(data => data.attendance === "P").length;
+      let absent = attendanceData.filter(data => data.attendance === "AB").length;
+      setOveraAll({ total, present, absent });
+    }
   }, [attendanceData]);
+  
+  
+
   const handleChange = (e) => {
     setError(false);
     setSearchQuery({ ...searchQuery, [e.target.id]: e.target.value });
   };
 
-  useEffect(() => {
-    setLoading("Wait, while we fetch your attendance data.");
-    setError(null);
-    setShowMore(false);
-    const fetchAttendance = async () => {
-      try {
-        const response = await fetch("/api/faculty/fetchAttendance", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(searchQuery),
-        });
-        const data = await response.json();
-        setLoading(false);
-        if (data.success === false) {
-          setError(
-            "Error fetching attendance data. Try again after some time time."
-          );
-          return;
-        }
-        setAttendanceData(data);
-        if (data.length > 8) {
-          setShowMore(true);
-        } else {
-          setShowMore(false);
-        }
-        setError(null);
-      } catch (err) {
-        console.error(err);
-        setLoading(null);
-        setError(
-          "Error fetching attendance data. Try again after some time time."
-        );
-      }
-    };
-    fetchAttendance();
-  }, []);
+  
 
   const handleSearchSubmit = async (e) => {
     setLoading("Wait, while we fetch your attendance data.");
