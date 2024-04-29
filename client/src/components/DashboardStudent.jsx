@@ -52,7 +52,6 @@ export default function DashboardStudent() {
       fetchAcademicInfo();
     }
   }, []);
-  console.log(academicInfo);
 
   useEffect(() => {
     const fetchAnnoucements = async () => {

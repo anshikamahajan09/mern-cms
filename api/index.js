@@ -5,6 +5,7 @@ import authRoute from './routes/auth.route.js';
 import facultyRoute from './routes/faculty.route.js';
 import studentRoute from './routes/student.route.js';
 import generalRoute from './routes/general.route.js';
+import adminRoute from './routes/admin.route.js';
 import cookieParser from 'cookie-parser';
 const app = express();
 
@@ -21,6 +22,7 @@ mongoose.connect(process.env.MONGO)
 app.use(cookieParser());
 app.use('/api/auth',authRoute);
 app.use('/api/faculty',facultyRoute);
+app.use('/api/admin',adminRoute);
 app.use('/api/student',studentRoute);
 app.use('/api/general',generalRoute);
 

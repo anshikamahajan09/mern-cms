@@ -76,7 +76,7 @@ const studentAcademicSchema = new mongoose.Schema(
       default : 1
     },
     courses: {
-      type: [String],
+      type: Array,
       required: true,
     },
     cgpa: {

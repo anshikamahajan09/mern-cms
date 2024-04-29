@@ -19,25 +19,79 @@ export default function AddStudent() {
     rollno: "",
     parentEmail: "",
     phone: "",
+    address: "",
     department: "",
     semester: 1,
-    courses: [],
+    courses: {},
     profilePicture:
       "https://www.rainbowschoolnellore.com/images/student-profile-1.jpg",
   });
+  console.log(studentData);
   const handleDataChange = (e) => {
-    setStudentData({
-      ...studentData,
-      [e.target.id]: e.target.value,
-    });
+    const { id, value, type } = e.target;
+    if (type === "radio") {
+      const courseCode = e.target.name;
+      setStudentData({
+        ...studentData,
+        courses: {
+          ...studentData.courses,
+          [courseCode]: value,
+        },
+      });
+    } else {
+      setStudentData({
+        ...studentData,
+        [id]: value,
+      });
+    }
   };
 
-  useEffect(() => {}, [studentData.department]);
+  useEffect(() => {
+    if (studentData.department && coursesDetails[studentData.department]) {
+      const defaultCourses = {};
+      Object.keys(coursesDetails[studentData.department]).forEach(
+        (courseCode) => {
+          const course = coursesDetails[studentData.department][courseCode];
+          if (course.faculty && course.faculty.length > 0) {
+            defaultCourses[courseCode] = course.faculty[0];
+          }
+        }
+      );
+      setStudentData((prevData) => ({
+        ...prevData,
+        courses: defaultCourses,
+      }));
+    }
+  }, [studentData.department]);
+
+  const handleStudentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/admin/add-student", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(studentData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log("Error adding student:", data.message);
+        return;
+      } 
+      console.log("Student added successfully");
+    } catch (error) {
+      console.log("Error adding student right now:", error);
+    }
+  };
 
   return (
     <div className="md:pl-64 p-7  overflow-hidden">
       <h1 className="text-3xl font-semibold mb-8">Add Student Details</h1>
-      <form className="flex flex-col lg:flex-row gap-16">
+      <form
+        className="flex flex-col lg:flex-row gap-16"
+        onSubmit={handleStudentSubmit}
+      >
         <div className="lg:w-4/6 w-full">
           <div className=" flex-wrap flex gap-y-8 gap-x-5 ">
             <div className="w-full flex gap-5">
@@ -129,13 +183,15 @@ export default function AddStudent() {
                 />
               </div>
             </div>
-            <div className="w-full flex gap-5 items-start">
-              <div className="w-full">
+
+            <div className="w-full flex gap-5">
+              <div className="w-1/3">
                 <Label value="Department" />
                 <Select
                   value={studentData.department}
                   onChange={handleDataChange}
                   id="department"
+                  required
                 >
                   <option value="">Select Department</option>
                   {Object.keys(coursesDetails).map((department) => (
@@ -145,8 +201,20 @@ export default function AddStudent() {
                   ))}
                 </Select>
               </div>
-              <div className="flex w-full flex-col gap-4">
-                {studentData.department &&
+              <div className="w-2/3">
+                <Label value="Address" />
+                <TextInput
+                  id="address"
+                  required
+                  value={studentData.address}
+                  onChange={handleDataChange}
+                  placeholder="Enter Address"
+                />
+              </div>
+            </div>
+
+            <div className="flex w-full flex-col gap-4">
+              {/* {studentData.department &&
                   Object.keys(coursesDetails[studentData.department]).map(
                     (courseCode, index) => {
                       const course =
@@ -176,9 +244,11 @@ export default function AddStudent() {
                                   <td>
                                     <span className="pr-3">
                                       <Radio
+                                        defaultChecked={facultyIndex === 0}
                                         id={faculty}
                                         name={courseCode}
                                         value={faculty}
+                                        onChange={handleDataChange}
                                       />
                                     </span>
                                     {faculty}
@@ -190,9 +260,50 @@ export default function AddStudent() {
                         </div>
                       );
                     }
-                  )}
-              </div>
-              <div className="w-full"></div>
+                  )} */}
+              {studentData.department && (
+                <table className="w-full">
+                  <thead>
+                    <tr>
+                      <th>Course</th>
+                      <th>Faculty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(coursesDetails[studentData.department]).map(
+                      (courseCode, index) => {
+                        const course =
+                          coursesDetails[studentData.department][courseCode];
+                        return (
+                          <tr key={courseCode}>
+                            <td>{course.title}</td>
+                            <td className="flex w-full">
+                              {course.faculty &&
+                                course.faculty.map((faculty, facultyIndex) => {
+                                  return (
+                                    <span
+                                      className="w-[150px] flex gap-2 items-center"
+                                      key={facultyIndex}
+                                    >
+                                      <Radio
+                                        id={faculty}
+                                        defaultChecked={facultyIndex === 0}
+                                        name={courseCode}
+                                        value={faculty}
+                                        onChange={handleDataChange}
+                                      />
+                                      {faculty}
+                                    </span>
+                                  );
+                                })}
+                            </td>
+                          </tr>
+                        );
+                      }
+                    )}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
@@ -227,7 +338,11 @@ export default function AddStudent() {
               </div>
             </div>
           </div>
-          <Button className="mt-4 w-full" gradientDuoTone={"greenToBlue"}>
+          <Button
+            className="mt-4 w-full"
+            gradientDuoTone={"greenToBlue"}
+            type="submit"
+          >
             Add Student
           </Button>
         </div>
