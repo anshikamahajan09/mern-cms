@@ -30,6 +30,31 @@ import { coursesDetails } from "../utils";
 function DashboardAdmin() {
   const [announcements, setAnnouncements] = useState([]);
   const {currentUser} = useSelector((state) => state.user);
+  const [areaChart, setAreaChart] = useState(null);
+  const [pieChart, setPieChart] = useState(null);
+
+  const [trendData, setTrendData] = useState({
+    students:{
+      trend: "up",
+      newTotal: 0,
+      tillLastMonthStudentCount: 0,
+    },
+    teachers: {
+      trend: "up",
+      newTotal: 0,
+      tillLastMonthFacultyCount: 0,
+    },
+    courses: {
+      trend: "up",
+      newTotal: Object.keys(coursesDetails).length,
+      lastYearTotal: 3,
+    },
+    fees: {
+      trend: "down",
+      newTotal: 48697,
+      lastMonthTotal: 53240,
+    },
+  });
 
   
   const pieChartColors = ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694", "#FFD76D","#FF9F43", "#FF6B6B", "#48BB78", "#4FD1C5", "#4F46E5", "#A3A3A3", "#FFD76D", "#FF9F43", "#FF6B6B", "#48BB78", "#4FD1C5", "#4F46E5", "#A3A3A3"];
@@ -141,7 +166,7 @@ function DashboardAdmin() {
     series: [
       {
         name: "Admissions",
-        data: [0, 0, 0, 0, 0, 6], // to update
+        data: [0, 0, 0, 0, 0, 7], // to update
         color: "#1A56DB",
       },
     ],
@@ -160,7 +185,7 @@ function DashboardAdmin() {
     yaxis: {
       show: true,
     }});
-
+    
   useEffect(()=>{
     const fetchAnnoucements = async () => {
       try{
@@ -183,53 +208,44 @@ function DashboardAdmin() {
     }
   }, []);
 
-  const [trendData, setTrendData] = useState({
-    students:{
-      trend: "up",
-      newTotal: 0,
-      tillLastMonthStudentCount: 0,
-    },
-    teachers: {
-      trend: "up",
-      newTotal: 0,
-      tillLastMonthFacultyCount: 0,
-    },
-    courses: {
-      trend: "up",
-      newTotal: Object.keys(coursesDetails).length,
-      lastYearTotal: 3,
-    },
-    fees: {
-      trend: "down",
-      newTotal: 48697,
-      lastMonthTotal: 53240,
-    },
-  });
-
-
+  
 
   useEffect(() => {
-    if (
-      document.getElementById("area-chart") &&
-      typeof ApexCharts !== "undefined"
-    ) {
-      const chart = new ApexCharts(
-        document.getElementById("area-chart"),
-        lineChartData
-      );
-      chart.render();
+    if (document.getElementById("area-chart") && typeof ApexCharts !== "undefined") {
+      // Destroy previous areaChart instance if exists
+      if (areaChart) {
+        areaChart.destroy();
+      }
+      
+      // Create new areaChart instance
+      const newAreaChart = new ApexCharts(document.getElementById("area-chart"), lineChartData);
+      newAreaChart.render();
+      setAreaChart(newAreaChart);
     }
-    if (
-      document.getElementById("pie-chart") &&
-      typeof ApexCharts !== "undefined"
-    ) {
-      const chart = new ApexCharts(
-        document.getElementById("pie-chart"),
-        pieChartData
-      );
-      chart.render();
+
+    if (document.getElementById("pie-chart") && typeof ApexCharts !== "undefined") {
+      // Destroy previous pieChart instance if exists
+      if (pieChart) {
+        pieChart.destroy();
+      }
+      
+      // Create new pieChart instance
+      const newPieChart = new ApexCharts(document.getElementById("pie-chart"), pieChartData);
+      newPieChart.render();
+      setPieChart(newPieChart);
     }
-  }, []);
+
+    // Cleanup function to destroy charts on component unmount
+    return () => {
+      if (areaChart) {
+        areaChart.destroy();
+      }
+      if (pieChart) {
+        pieChart.destroy();
+      }
+    };
+  }, [trendData, lineChartData, pieChartData]);
+
 
   useEffect(()=>{
     const fetchTrendData = async () => {
@@ -259,6 +275,21 @@ function DashboardAdmin() {
       fetchTrendData();
     }
   },[])
+  
+  useEffect(()=>{
+    let updatedArray = [0,0,0,0,0,trendData.students.newTotal - trendData.students.tillLastMonthStudentCount];
+   setLineChartData({
+      ...lineChartData,
+      series: [
+        {
+          name: "Admissions",
+          data: updatedArray,
+          color: "#1A56DB",
+        },
+      ],
+    });
+  },[trendData.students.newTotal, trendData.students.tillLastMonthStudentCount])
+
   return (
     <main className="text-white w-full p-6 md:pl-64">
       <h1 className="text-3xl font-bold border-b-1 mb-6 text-center sm:text-left">
@@ -399,14 +430,14 @@ function DashboardAdmin() {
               <div className="flex justify-between">
                 <div>
                   <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">
-                    2.4k
+                    {trendData.students.newTotal - trendData.students.tillLastMonthStudentCount}
                   </h5>
                   <p className="text-base font-normal text-gray-500 dark:text-gray-400">
                     Addmissions this year
                   </p>
                 </div>
                 <div className="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
-                  12%
+                  100%
                   <svg
                     className="w-3 h-3 ms-1"
                     aria-hidden="true"
