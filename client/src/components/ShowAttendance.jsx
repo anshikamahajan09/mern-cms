@@ -14,7 +14,7 @@ export default function ShowAttendance() {
   const [showMore, setShowMore] = useState(false);
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [endIndex, setEndIndex] = useState(4);
+  const [endIndex, setEndIndex] = useState(8);
   const [overAll , setOveraAll] = useState({
     total: 0,
     present: 0,
@@ -86,7 +86,7 @@ export default function ShowAttendance() {
           return;
         }
         setAttendanceData(data);
-        if (data.length > 4) {
+        if (data.length > 8) {
           setShowMore(true);
         } else {
           setShowMore(false);
@@ -125,7 +125,7 @@ export default function ShowAttendance() {
         return;
       }
       setAttendanceData(data);
-      if (data.length > 4) {
+      if (data.length > 8) {
         setShowMore(true);
       } else {
         setShowMore(false);
@@ -143,8 +143,8 @@ export default function ShowAttendance() {
   
 
   const onShowMoreClick = () => {
-    setEndIndex(endIndex + 4);
-    if (endIndex + 4 >= attendanceData.length) {
+    setEndIndex(endIndex + 8);
+    if (endIndex + 8 >= attendanceData.length) {
       setShowMore(false);
     }
   };
