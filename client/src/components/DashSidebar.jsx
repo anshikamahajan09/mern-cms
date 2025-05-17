@@ -187,7 +187,7 @@ export default function DashSidebar() {
                     Mark attendence
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=add-assignment`}>
+                {/* <Link to={`/${currentUser.userType}?tab=add-assignment`}>
                   <Sidebar.Item
                     active={tab === "add-assignment"}
                     icon={HiDocumentText}
@@ -195,7 +195,7 @@ export default function DashSidebar() {
                   >
                     Assignments
                   </Sidebar.Item>
-                </Link>
+                </Link> */}
                 <Link to={`/${currentUser.userType}?tab=notices`}>
                   <Sidebar.Item
                     active={tab === `notices`}
@@ -254,7 +254,7 @@ export default function DashSidebar() {
                     Progress
                   </Sidebar.Item>
                 </Link>
-                <Link to={`/${currentUser.userType}?tab=see-assignment`}>
+                {/* <Link to={`/${currentUser.userType}?tab=see-assignment`}>
                   <Sidebar.Item
                     active={tab === "see-assignment"}
                     icon={HiDocumentText}
@@ -262,7 +262,7 @@ export default function DashSidebar() {
                   >
                     Assignments
                   </Sidebar.Item>
-                </Link>
+                </Link> */}
                 <Link to={`/${currentUser.userType}?tab=notices`}>
                   <Sidebar.Item
                     active={tab === "notices"}

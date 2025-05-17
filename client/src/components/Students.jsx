@@ -4,6 +4,7 @@ import { Table } from "flowbite-react";
 import { useSelector } from "react-redux";
 import { FileInput } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { coursesDetails } from "../utils";
 
 export default function Students() {
   const { currentUser } = useSelector((state) => state.user);
@@ -35,11 +36,11 @@ export default function Students() {
                 Department :
               </label>
               <Select className="w-[170px]" id="department">
-                <option value="cse">CSE</option>
-                <option value="ece">ECE</option>
-                <option value="eee">EEE</option>
-                <option value="mech">MECH</option>
-                <option value="civil">CIVIL</option>
+                {Object.keys(coursesDetails).map((course) => {
+                  return (
+                    <option value={course}>{course}</option>
+                  )
+                })}
               </Select>
             </div>
             <div className="">
@@ -92,84 +93,6 @@ export default function Students() {
                 <Table.HeadCell>CGPA</Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>101</Table.Cell>
-                  <Table.Cell>
-                    <img
-                      className="h-10 w-10"
-                      src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"
-                    ></img>
-                  </Table.Cell>
-                  <Table.Cell>Anuj Kumar</Table.Cell>
-                  <Table.Cell>anuj@campusflow.edu.in</Table.Cell>
-                  <Table.Cell>CSE</Table.Cell>
-                  <Table.Cell>9.7</Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>101</Table.Cell>
-                  <Table.Cell>
-                    <img
-                      className="h-10 w-10"
-                      src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"
-                    ></img>
-                  </Table.Cell>
-                  <Table.Cell>Anuj Kumar</Table.Cell>
-                  <Table.Cell>anuj@campusflow.edu.in</Table.Cell>
-                  <Table.Cell>CSE</Table.Cell>
-                  <Table.Cell>9.7</Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>101</Table.Cell>
-                  <Table.Cell>
-                    <img
-                      className="h-10 w-10"
-                      src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"
-                    ></img>
-                  </Table.Cell>
-                  <Table.Cell>Anuj Kumar</Table.Cell>
-                  <Table.Cell>anuj@campusflow.edu.in</Table.Cell>
-                  <Table.Cell>CSE</Table.Cell>
-                  <Table.Cell>9.7</Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>101</Table.Cell>
-                  <Table.Cell>
-                    <img
-                      className="h-10 w-10"
-                      src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"
-                    ></img>
-                  </Table.Cell>
-                  <Table.Cell>Anuj Kumar</Table.Cell>
-                  <Table.Cell>anuj@campusflow.edu.in</Table.Cell>
-                  <Table.Cell>CSE</Table.Cell>
-                  <Table.Cell>9.7</Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>101</Table.Cell>
-                  <Table.Cell>
-                    <img
-                      className="h-10 w-10"
-                      src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"
-                    ></img>
-                  </Table.Cell>
-                  <Table.Cell>Anuj Kumar</Table.Cell>
-                  <Table.Cell>anuj@campusflow.edu.in</Table.Cell>
-                  <Table.Cell>CSE</Table.Cell>
-                  <Table.Cell>9.7</Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>101</Table.Cell>
-                  <Table.Cell>
-                    <img
-                      className="h-10 w-10"
-                      src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"
-                    ></img>
-                  </Table.Cell>
-                  <Table.Cell>Anuj Kumar</Table.Cell>
-                  <Table.Cell>anuj@campusflow.edu.in</Table.Cell>
-                  <Table.Cell>CSE</Table.Cell>
-                  <Table.Cell>9.7</Table.Cell>
-                </Table.Row>
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>101</Table.Cell>
                   <Table.Cell>
